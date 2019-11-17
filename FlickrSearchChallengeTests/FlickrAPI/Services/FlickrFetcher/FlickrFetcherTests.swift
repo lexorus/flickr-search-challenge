@@ -27,6 +27,8 @@ class FlickrFetcherTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - perform(request:callback:)
+
     func test_whenBuilderFailsToBuildRequest_thenCallbackIsCalledWithRequestBuildError() {
         // GIVEN
         requestBuilder.urlRequestStub = nil
@@ -38,7 +40,7 @@ class FlickrFetcherTests: XCTestCase {
         }
 
         // THEN
-        let expectedResult = SampleResult.failure(FlickrFetcher.Error.failedToBuildURLRequest)
+        let expectedResult = SampleResult.failure(.failedToBuildURLRequest)
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
@@ -55,7 +57,7 @@ class FlickrFetcherTests: XCTestCase {
         urlSession.performFuncCheck.arguments?.1(nil, mockHTTPURLResponse, nil)
 
         // THEN
-        let expectedResult = SampleResult.failure(FlickrFetcher.Error.apiError(nil))
+        let expectedResult = SampleResult.failure(.apiError(nil))
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
@@ -72,7 +74,7 @@ class FlickrFetcherTests: XCTestCase {
         urlSession.performFuncCheck.arguments?.1(nil, mockHTTPURLResponse, nil)
 
         // THEN
-        let expectedResult = SampleResult.failure(FlickrFetcher.Error.noDataError)
+        let expectedResult = SampleResult.failure(.noDataError)
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
@@ -89,7 +91,7 @@ class FlickrFetcherTests: XCTestCase {
         urlSession.performFuncCheck.arguments?.1(Data(), mockHTTPURLResponse, nil)
 
         // THEN
-        let expectedResult = SampleResult.failure(FlickrFetcher.Error.decodingError(nil))
+        let expectedResult = SampleResult.failure(.decodingError(nil))
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
@@ -112,4 +114,37 @@ class FlickrFetcherTests: XCTestCase {
         let expectedResult = Result<[String], FlickrFetcher.Error>.success([sampleString])
         XCTAssertEqual(resultToTest, expectedResult)
     }
+
+    // MARK: - getData(from:callback)
+
+    func test_whenGetDataBuilderFailsToBuildRequest_thenCallbackIsCalledWithRequestBuildError() {
+        // GIVEN
+        var resultToTest: Result<Data, FlickrFetcher.Error>?
+
+        // WHEN
+        fetcher.getData(from: "") {
+            resultToTest = $0
+        }
+
+        // THEN
+        let expectedResult = Result<Data, FlickrFetcher.Error>.failure(.failedToBuildURLRequest)
+        XCTAssertEqual(resultToTest, expectedResult)
+    }
+
+    func test_whenGetDataSucceedsWithValidData_thenDataIsReturnedInCallback() {
+        // GIVEN
+        var resultToTest: Result<Data, FlickrFetcher.Error>?
+        let sampleData = "sample".data(using: .utf8)!
+
+        // WHEN
+        fetcher.getData(from: "sample_url.com") {
+            resultToTest = $0
+        }
+        urlSession.performFuncCheck.arguments?.1(sampleData, HTTPURLResponse.mocked(), nil)
+
+        // THEN
+        let expectedResult = Result<Data, FlickrFetcher.Error>.success(sampleData)
+        XCTAssertEqual(resultToTest, expectedResult)
+    }
+
 }
