@@ -12,13 +12,13 @@ final class FlickrFetcher {
         self.urlSession = urlSession
     }
 
-    func perform<T: Decodable>(_ request: FlickrRequest, callback: @escaping (Result<T, Error>) -> Void) {
+    func perform<T: Decodable>(_ request: FlickrRequest, callback: @escaping (Result<T, APIError>) -> Void) {
         guard let urlRequest = requestBuilder.urlRequest(from: request) else {
             callback(.failure(.failedToBuildURLRequest))
             return
         }
         perform(urlRequest) { (dataResult) in
-            let result = dataResult.flatMap { (data) -> Result<T, FlickrFetcher.Error> in
+            let result = dataResult.flatMap { (data) -> Result<T, APIError> in
                 do {
                     let decodedModel = try self.decoder.decode(T.self, from: data)
                     return .success(decodedModel)
@@ -30,7 +30,7 @@ final class FlickrFetcher {
         }
     }
 
-    func getData(from stringURL: String, callback: @escaping (Result<Data, Error>) -> Void) {
+    func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) {
         guard let url = URL(string: stringURL) else {
             callback(.failure(.failedToBuildURLRequest))
             return
@@ -38,7 +38,7 @@ final class FlickrFetcher {
         perform(URLRequest(url: url), callback: callback)
     }
 
-    private func perform(_ request: URLRequest, callback: @escaping (Result<Data, Error>) -> Void) {
+    private func perform(_ request: URLRequest, callback: @escaping (Result<Data, APIError>) -> Void) {
         urlSession.perform(request) { (data, response, error) in
             guard let response = response as? HTTPURLResponse,
                 (200..<300) ~= response.statusCode else {
@@ -52,24 +52,26 @@ final class FlickrFetcher {
             callback(.success(data))
         }
     }
+}
 
-    enum Error: Swift.Error, Equatable {
-        case failedToBuildURLRequest
-        case apiError(Swift.Error?)
-        case noDataError
-        case decodingError(Swift.Error?)
+enum APIError: Swift.Error, Equatable {
+    case failedToBuildURLRequest
+    case apiError(Swift.Error?)
+    case flickAPIError(FlickrError)
+    case noDataError
+    case decodingError(Swift.Error?)
 
-        static func == (lhs: FlickrFetcher.Error, rhs: FlickrFetcher.Error) -> Bool {
-            switch (lhs, rhs) {
-            case (.failedToBuildURLRequest, .failedToBuildURLRequest),
-                 (.apiError, .apiError),
-                 (.noDataError, .noDataError),
-                 (.decodingError, .decodingError):
-                return true
-            default:
-                return false
-            }
+    static func == (lhs: APIError, rhs: APIError) -> Bool {
+        switch (lhs, rhs) {
+        case (.failedToBuildURLRequest, .failedToBuildURLRequest),
+             (.apiError, .apiError),
+             (.noDataError, .noDataError),
+             (.decodingError, .decodingError):
+            return true
+        case (.flickAPIError(let lhsError), .flickAPIError(let rhsError)):
+            return lhsError == rhsError
+        default:
+            return false
         }
-
     }
 }

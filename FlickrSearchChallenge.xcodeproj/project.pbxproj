@@ -36,8 +36,9 @@
 		65C932EA2381F85800460C36 /* MockHTTPURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932E92381F85800460C36 /* MockHTTPURLResponse.swift */; };
 		65C932EC2381F8D100460C36 /* MockURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932EB2381F8D100460C36 /* MockURL.swift */; };
 		65C932EE2381F9D500460C36 /* MockURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932ED2381F9D500460C36 /* MockURLRequest.swift */; };
-		65C932F02382041500460C36 /* PhotoRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932EF2382041500460C36 /* PhotoRequestBuilder.swift */; };
+		65C932F02382041500460C36 /* PhotoStringURLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932EF2382041500460C36 /* PhotoStringURLBuilder.swift */; };
 		65C932F223820AB700460C36 /* PhotoRequestBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932F123820AB700460C36 /* PhotoRequestBuilderTests.swift */; };
+		65C932F423820D3500460C36 /* FetcherFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932F323820D3500460C36 /* FetcherFacade.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,8 +85,9 @@
 		65C932E92381F85800460C36 /* MockHTTPURLResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHTTPURLResponse.swift; sourceTree = "<group>"; };
 		65C932EB2381F8D100460C36 /* MockURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURL.swift; sourceTree = "<group>"; };
 		65C932ED2381F9D500460C36 /* MockURLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLRequest.swift; sourceTree = "<group>"; };
-		65C932EF2382041500460C36 /* PhotoRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoRequestBuilder.swift; sourceTree = "<group>"; };
+		65C932EF2382041500460C36 /* PhotoStringURLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStringURLBuilder.swift; sourceTree = "<group>"; };
 		65C932F123820AB700460C36 /* PhotoRequestBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoRequestBuilderTests.swift; sourceTree = "<group>"; };
+		65C932F323820D3500460C36 /* FetcherFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetcherFacade.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +186,7 @@
 		653EC70023813E53007F1404 /* FlickrAPI */ = {
 			isa = PBXGroup;
 			children = (
+				65C932F323820D3500460C36 /* FetcherFacade.swift */,
 				653EC723238161F6007F1404 /* Services */,
 				653EC717238157AB007F1404 /* Requests */,
 				653EC70123813E53007F1404 /* Models */,
@@ -244,7 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				653EC71C2381591E007F1404 /* RequestBuilder.swift */,
-				65C932EF2382041500460C36 /* PhotoRequestBuilder.swift */,
+				65C932EF2382041500460C36 /* PhotoStringURLBuilder.swift */,
 				653EC725238163FA007F1404 /* FlickrFetcher.swift */,
 			);
 			path = Services;
@@ -397,7 +400,8 @@
 				653EC722238161DE007F1404 /* FlickrRequest.swift in Sources */,
 				653EC71623814E88007F1404 /* Photos.swift in Sources */,
 				653EC70523813F67007F1404 /* Photo.swift in Sources */,
-				65C932F02382041500460C36 /* PhotoRequestBuilder.swift in Sources */,
+				65C932F423820D3500460C36 /* FetcherFacade.swift in Sources */,
+				65C932F02382041500460C36 /* PhotoStringURLBuilder.swift in Sources */,
 				653EC70723813FBD007F1404 /* PhotosPage.swift in Sources */,
 				653EC726238163FA007F1404 /* FlickrFetcher.swift in Sources */,
 				65C932DF23817B8B00460C36 /* Cancellable.swift in Sources */,

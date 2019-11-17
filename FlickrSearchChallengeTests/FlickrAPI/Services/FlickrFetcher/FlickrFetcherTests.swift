@@ -2,7 +2,7 @@ import XCTest
 @testable import FlickrSearchChallenge
 
 class FlickrFetcherTests: XCTestCase {
-    typealias SampleResult = Result<String, FlickrFetcher.Error>
+    typealias SampleResult = Result<String, APIError>
 
     let sampleAPIKey = "sample_api_key"
     var requestBuilder: MockRequestBuilder!
@@ -98,20 +98,20 @@ class FlickrFetcherTests: XCTestCase {
     func test_whenThereIsSuccessfulResponseWithValidData_thenItShouldBeDecodedAndReturnedInCallback() {
         // GIVEN
         let mockHTTPURLResponse = HTTPURLResponse.mocked()
-        var resultToTest: Result<[String], FlickrFetcher.Error>?
+        var resultToTest: Result<[String], APIError>?
         requestBuilder.urlRequestStub = .mocked()
         let sampleString = "some_value"
         let sampleJson = "[ \"\(sampleString)\" ]"
         let sampleData = sampleJson.data(using: .utf8)
 
         // WHEN
-        fetcher.perform(SearchPhotosRequest.mocked()) { (result: Result<[String], FlickrFetcher.Error>) in
+        fetcher.perform(SearchPhotosRequest.mocked()) { (result: Result<[String], APIError>) in
             resultToTest = result
         }
         urlSession.performFuncCheck.arguments?.1(sampleData, mockHTTPURLResponse, nil)
 
         // THEN
-        let expectedResult = Result<[String], FlickrFetcher.Error>.success([sampleString])
+        let expectedResult = Result<[String], APIError>.success([sampleString])
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
@@ -119,7 +119,7 @@ class FlickrFetcherTests: XCTestCase {
 
     func test_whenGetDataBuilderFailsToBuildRequest_thenCallbackIsCalledWithRequestBuildError() {
         // GIVEN
-        var resultToTest: Result<Data, FlickrFetcher.Error>?
+        var resultToTest: Result<Data, APIError>?
 
         // WHEN
         fetcher.getData(from: "") {
@@ -127,13 +127,13 @@ class FlickrFetcherTests: XCTestCase {
         }
 
         // THEN
-        let expectedResult = Result<Data, FlickrFetcher.Error>.failure(.failedToBuildURLRequest)
+        let expectedResult = Result<Data, APIError>.failure(.failedToBuildURLRequest)
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
     func test_whenGetDataSucceedsWithValidData_thenDataIsReturnedInCallback() {
         // GIVEN
-        var resultToTest: Result<Data, FlickrFetcher.Error>?
+        var resultToTest: Result<Data, APIError>?
         let sampleData = "sample".data(using: .utf8)!
 
         // WHEN
@@ -143,7 +143,7 @@ class FlickrFetcherTests: XCTestCase {
         urlSession.performFuncCheck.arguments?.1(sampleData, HTTPURLResponse.mocked(), nil)
 
         // THEN
-        let expectedResult = Result<Data, FlickrFetcher.Error>.success(sampleData)
+        let expectedResult = Result<Data, APIError>.success(sampleData)
         XCTAssertEqual(resultToTest, expectedResult)
     }
 

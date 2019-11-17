@@ -2,7 +2,7 @@ import XCTest
 @testable import FlickrSearchChallenge
 
 class PhotoRequestBuilderTests: XCTestCase {
-    let builder = PhotoRequestBuilder()
+    let builder = PhotoStringURLBuilder()
 
     func test_whenPhotoIsPassed_thenTheRightURLStringIsBuilt() {
         // GIVEN

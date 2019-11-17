@@ -1,6 +1,6 @@
 import Foundation
 
-final class PhotoRequestBuilder {
+final class PhotoStringURLBuilder {
     func urlString(for photo: Photo) -> String {
         return urlString(farm: "\(photo.farm)",
                          server: photo.server,

@@ -37,9 +37,9 @@ class FlickrResponseTests: XCTestCase {
         let decodedModel = try? JSONDecoder().decode(FlickrResponse<Photos>.self, from: failureData!)
 
         // THEN
-        let expectedError = FlickrResponse<Photos>.Error(code: 112,
-                                                 message: "Method \"flickr.photos.searchr\" not found")
-        let expectedResponse = FlickrResponse(result: Result<Photos, FlickrResponse.Error>.failure(expectedError), status: .failure)
+        let expectedError = FlickrError(code: 112,
+                                        message: "Method \"flickr.photos.searchr\" not found")
+        let expectedResponse = FlickrResponse(result: Result<Photos, FlickrError>.failure(expectedError), status: .failure)
         XCTAssertEqual(decodedModel, expectedResponse)
     }
 }

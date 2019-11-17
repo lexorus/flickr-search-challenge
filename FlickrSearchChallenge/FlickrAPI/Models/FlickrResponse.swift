@@ -1,7 +1,7 @@
 import Foundation
 
 struct FlickrResponse<Model: Decodable>: Decodable {
-    let result: Result<Model, Error>
+    let result: Result<Model, FlickrError>
     let status: Status
 
     private enum CodingKeys: String, CodingKey {
@@ -13,11 +13,11 @@ struct FlickrResponse<Model: Decodable>: Decodable {
         status = try container.decode(Status.self, forKey: .status)
         switch status {
         case .success: result = .success(try Model(from: decoder))
-        case .failure: result = .failure(try Error(from: decoder))
+        case .failure: result = .failure(try FlickrError(from: decoder))
         }
     }
 
-    init(result: Result<Model, Error>, status: Status) {
+    init(result: Result<Model, FlickrError>, status: Status) {
         self.result = result
         self.status = status
     }
@@ -26,11 +26,11 @@ struct FlickrResponse<Model: Decodable>: Decodable {
         case success = "ok"
         case failure = "fail"
     }
+}
 
-    struct Error: Swift.Error, Decodable, Equatable {
-        let code: Int
-        let message: String
-    }
+struct FlickrError: Swift.Error, Decodable, Equatable {
+    let code: Int
+    let message: String
 }
 
 extension FlickrResponse: Equatable where Model: Equatable {
