@@ -1,0 +1,33 @@
+{
+    "photos": {
+        "page": 1,
+        "pages": 91196,
+        "perpage": 2,
+        "total": "182391",
+        "photo": [
+            {
+                "id": "49077689296",
+                "owner": "185618714@N08",
+                "secret": "6c458a1a76",
+                "server": "65535",
+                "farm": 66,
+                "title": "Cat",
+                "ispublic": 1,
+                "isfriend": 0,
+                "isfamily": 0
+            },
+            {
+                "id": "49077374932",
+                "owner": "143537090@N02",
+                "secret": "393d6f4586",
+                "server": "65535",
+                "farm": 66,
+                "title": "Brown Tabby Cat",
+                "ispublic": 1,
+                "isfriend": 0,
+                "isfamily": 0
+            }
+        ]
+    },
+    "stat": "ok"
+}
