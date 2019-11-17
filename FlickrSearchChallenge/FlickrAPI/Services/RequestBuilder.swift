@@ -1,6 +1,11 @@
 import Foundation
 
-final class RequestBuilder {
+protocol RequestBuilderType {
+    init(apiKey: String)
+    func urlRequest(from request: FlickrRequest) -> URLRequest?
+}
+
+final class RequestBuilder: RequestBuilderType {
     private let apiKey: String
     private let baseURL = "https://api.flickr.com/services/rest/"
 
@@ -20,9 +25,7 @@ final class RequestBuilder {
     func urlRequest(from request: FlickrRequest) -> URLRequest? {
         var urlComponents = URLComponents(string: baseURL)
         urlComponents?.queryItems = sharedQueryItems + request.queryItems
-        guard let url = urlComponents?.url else {
-            return nil
-        }
+        guard let url = urlComponents?.url else { return nil }
         var requestURL = URLRequest(url: url)
         requestURL.httpMethod = request.httpMethod.rawValue
 
