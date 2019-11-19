@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		650401F223836B0900B78A73 /* LoadingFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650401F023836B0900B78A73 /* LoadingFooter.swift */; };
+		650401F323836B0900B78A73 /* LoadingFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 650401F123836B0900B78A73 /* LoadingFooter.xib */; };
+		652A0265238328E1005F1181 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652A0263238328E1005F1181 /* PhotoCell.swift */; };
+		652A0266238328E1005F1181 /* PhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 652A0264238328E1005F1181 /* PhotoCell.xib */; };
 		653EC6D8238138D6007F1404 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653EC6D7238138D6007F1404 /* AppDelegate.swift */; };
-		653EC6DC238138D6007F1404 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653EC6DB238138D6007F1404 /* ViewController.swift */; };
+		653EC6DC238138D6007F1404 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653EC6DB238138D6007F1404 /* SearchViewController.swift */; };
 		653EC6DF238138D6007F1404 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 653EC6DD238138D6007F1404 /* Main.storyboard */; };
 		653EC6E1238138D8007F1404 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 653EC6E0238138D8007F1404 /* Assets.xcassets */; };
 		653EC6E4238138D8007F1404 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 653EC6E2238138D8007F1404 /* LaunchScreen.storyboard */; };
@@ -39,6 +43,9 @@
 		65C932F02382041500460C36 /* PhotoStringURLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932EF2382041500460C36 /* PhotoStringURLBuilder.swift */; };
 		65C932F223820AB700460C36 /* PhotoRequestBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932F123820AB700460C36 /* PhotoRequestBuilderTests.swift */; };
 		65C932F423820D3500460C36 /* FetcherFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932F323820D3500460C36 /* FetcherFacade.swift */; };
+		65E07DB723834F4700384B72 /* UICollectionViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */; };
+		65E07DBA23834F8300384B72 /* IdentifiableType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DB923834F8300384B72 /* IdentifiableType.swift */; };
+		65E07DBC238352C700384B72 /* SearchViewControllerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DBB238352C700384B72 /* SearchViewControllerState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,9 +59,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		650401F023836B0900B78A73 /* LoadingFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingFooter.swift; sourceTree = "<group>"; };
+		650401F123836B0900B78A73 /* LoadingFooter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingFooter.xib; sourceTree = "<group>"; };
+		652A0263238328E1005F1181 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		652A0264238328E1005F1181 /* PhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoCell.xib; sourceTree = "<group>"; };
 		653EC6D4238138D5007F1404 /* FlickrSearchChallenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrSearchChallenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		653EC6D7238138D6007F1404 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		653EC6DB238138D6007F1404 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		653EC6DB238138D6007F1404 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		653EC6DE238138D6007F1404 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		653EC6E0238138D8007F1404 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		653EC6E3238138D8007F1404 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -88,6 +99,9 @@
 		65C932EF2382041500460C36 /* PhotoStringURLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStringURLBuilder.swift; sourceTree = "<group>"; };
 		65C932F123820AB700460C36 /* PhotoRequestBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoRequestBuilderTests.swift; sourceTree = "<group>"; };
 		65C932F323820D3500460C36 /* FetcherFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetcherFacade.swift; sourceTree = "<group>"; };
+		65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewExtensions.swift; sourceTree = "<group>"; };
+		65E07DB923834F8300384B72 /* IdentifiableType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableType.swift; sourceTree = "<group>"; };
+		65E07DBB238352C700384B72 /* SearchViewControllerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewControllerState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +122,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		652A026723833E4B005F1181 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				653EC6DB238138D6007F1404 /* SearchViewController.swift */,
+				653EC6DD238138D6007F1404 /* Main.storyboard */,
+				65E07DBB238352C700384B72 /* SearchViewControllerState.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		652A026823833E55005F1181 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				652A0263238328E1005F1181 /* PhotoCell.swift */,
+				652A0264238328E1005F1181 /* PhotoCell.xib */,
+				650401F023836B0900B78A73 /* LoadingFooter.swift */,
+				650401F123836B0900B78A73 /* LoadingFooter.xib */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		653EC6CB238138D5007F1404 = {
 			isa = PBXGroup;
 			children = (
@@ -132,6 +167,8 @@
 				653EC6D7238138D6007F1404 /* AppDelegate.swift */,
 				653EC6FA23813D31007F1404 /* Modules */,
 				653EC70023813E53007F1404 /* FlickrAPI */,
+				65E07DB823834F5400384B72 /* Protocols */,
+				65E07DB523834F3400384B72 /* Extensions */,
 				653EC6F923813C6A007F1404 /* SupportingFiles */,
 			);
 			path = FlickrSearchChallenge;
@@ -161,18 +198,18 @@
 		653EC6FA23813D31007F1404 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				653EC6FB23813D4F007F1404 /* InitialViewController */,
+				653EC6FB23813D4F007F1404 /* Search */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
 		};
-		653EC6FB23813D4F007F1404 /* InitialViewController */ = {
+		653EC6FB23813D4F007F1404 /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				653EC6DB238138D6007F1404 /* ViewController.swift */,
-				653EC6DD238138D6007F1404 /* Main.storyboard */,
+				652A026823833E55005F1181 /* Views */,
+				652A026723833E4B005F1181 /* ViewController */,
 			);
-			path = InitialViewController;
+			path = Search;
 			sourceTree = "<group>";
 		};
 		653EC6FE23813DED007F1404 /* SupportingFiles */ = {
@@ -294,6 +331,22 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
+		65E07DB523834F3400384B72 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		65E07DB823834F5400384B72 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				65E07DB923834F8300384B72 /* IdentifiableType.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -376,6 +429,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				653EC6E4238138D8007F1404 /* LaunchScreen.storyboard in Resources */,
+				652A0266238328E1005F1181 /* PhotoCell.xib in Resources */,
+				650401F323836B0900B78A73 /* LoadingFooter.xib in Resources */,
 				653EC6E1238138D8007F1404 /* Assets.xcassets in Resources */,
 				653EC6DF238138D6007F1404 /* Main.storyboard in Resources */,
 			);
@@ -397,17 +452,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65E07DBC238352C700384B72 /* SearchViewControllerState.swift in Sources */,
+				65E07DB723834F4700384B72 /* UICollectionViewExtensions.swift in Sources */,
 				653EC722238161DE007F1404 /* FlickrRequest.swift in Sources */,
 				653EC71623814E88007F1404 /* Photos.swift in Sources */,
 				653EC70523813F67007F1404 /* Photo.swift in Sources */,
 				65C932F423820D3500460C36 /* FetcherFacade.swift in Sources */,
+				652A0265238328E1005F1181 /* PhotoCell.swift in Sources */,
 				65C932F02382041500460C36 /* PhotoStringURLBuilder.swift in Sources */,
 				653EC70723813FBD007F1404 /* PhotosPage.swift in Sources */,
 				653EC726238163FA007F1404 /* FlickrFetcher.swift in Sources */,
+				650401F223836B0900B78A73 /* LoadingFooter.swift in Sources */,
 				65C932DF23817B8B00460C36 /* Cancellable.swift in Sources */,
+				65E07DBA23834F8300384B72 /* IdentifiableType.swift in Sources */,
 				653EC719238157C5007F1404 /* SearchPhotosRequest.swift in Sources */,
 				653EC7092381402C007F1404 /* FlickrResponse.swift in Sources */,
-				653EC6DC238138D6007F1404 /* ViewController.swift in Sources */,
+				653EC6DC238138D6007F1404 /* SearchViewController.swift in Sources */,
 				653EC6D8238138D6007F1404 /* AppDelegate.swift in Sources */,
 				653EC72B23816D56007F1404 /* URLSessionType.swift in Sources */,
 				653EC71D2381591E007F1404 /* RequestBuilder.swift in Sources */,
