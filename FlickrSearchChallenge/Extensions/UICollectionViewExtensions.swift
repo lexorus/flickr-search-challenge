@@ -2,7 +2,7 @@ import UIKit
 
 extension UICollectionView {
     func register<T: UICollectionViewCell & IdentifiableType>(_ type: T.Type) {
-        register(type, forCellWithReuseIdentifier: type.id)
+        register(UINib(nibName: type.id, bundle: nil), forCellWithReuseIdentifier: type.id)
     }
 
     func register<T: UICollectionReusableView & IdentifiableType>(_ type: T.Type, for kind: String) {

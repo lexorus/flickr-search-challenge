@@ -1,6 +1,16 @@
 import Foundation
 
-final class Fetcher {
+protocol FetcherType {
+    init(apiKey: String)
+    func getPhotos(for query: String,
+                   pageNumber: UInt,
+                   pageSize: UInt,
+                   callback: @escaping (Result<PhotosPage, APIError>) -> Void)
+    func getImageData(for photo: Photo,
+                      callback: @escaping (Result<Data, APIError>) -> Void)
+}
+
+final class Fetcher: FetcherType {
     private let flickrFetcher: FlickrFetcher
 
     init(apiKey: String) {

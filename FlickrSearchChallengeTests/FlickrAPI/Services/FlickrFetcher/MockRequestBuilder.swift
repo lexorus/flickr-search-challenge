@@ -9,7 +9,7 @@ final class MockRequestBuilder: RequestBuilderType {
     }
 
     var urlRequestStub: URLRequest?
-    var urlRequestFuncCheck = FunckCheck<FlickrRequest>()
+    var urlRequestFuncCheck = FuncCheck<FlickrRequest>()
     func urlRequest(from request: FlickrRequest) -> URLRequest? {
         urlRequestFuncCheck.call(request)
         return urlRequestStub

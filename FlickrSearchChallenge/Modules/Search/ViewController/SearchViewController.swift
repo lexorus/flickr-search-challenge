@@ -1,11 +1,15 @@
 import UIKit
 
-protocol SearchPresenterOutput {
-    func configure(with state: SearchViewController.State)
+protocol SearchPresenterOutput: class {
+    func configure(for state: SearchViewController.State)
 }
 
-#warning("To Remove: MockCellModels for UI testing until we have real data source.")
-var cellModels = [0, 1, 2, 3, 4, 5]
+protocol SearchPresenterInput {
+    var cellModels: [PhotoCell.Model] { get }
+    func viewDidLoad()
+    func searchTextDidChange(text: String)
+    func userDidScrollToBottom()
+}
 
 final class SearchViewController: UIViewController {
     private weak var loadingFooter: LoadingFooter!
@@ -14,27 +18,14 @@ final class SearchViewController: UIViewController {
     @IBOutlet private weak var searchBar: UISearchBar!
     @IBOutlet private weak var collectionView: UICollectionView!
 
+    private lazy var presenter: SearchPresenterInput = { SearchPresenter(view: self) }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupsearchBar()
         setupCollectionView()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        #warning("To Remove: Data flow and UI update simulation until we have real data source.")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.configure(with: .loading(.iterative([])))
-            cellModels += [6, 7, 8]
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.configure(with: .loaded(.iterative([
-                    IndexPath(row: 6, section: 0),
-                    IndexPath(row: 7, section: 0),
-                    IndexPath(row: 8, section: 0)])))
-            }
-        }
+        presenter.viewDidLoad()
     }
 
     private func setupsearchBar() {
@@ -43,6 +34,7 @@ final class SearchViewController: UIViewController {
 
     private func setupCollectionView() {
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.collectionViewLayout = collectionViewLayout
         collectionView.register(PhotoCell.self)
         collectionView.register(LoadingFooter.self, for: UICollectionView.elementKindSectionFooter)
@@ -68,27 +60,32 @@ final class SearchViewController: UIViewController {
 // MARK: - SearchPresenterOutput
 
 extension SearchViewController: SearchPresenterOutput {
-    func configure(with state: State) {
-        switch state {
-        case .empty: configureViewForEmptyState()
-        case .noResult: configureViewForNoResultState()
-        case .error(let errorMessage): configureViewForErrorState(message: errorMessage)
-        case .loading(let stage): configureViewForLoadingState(loadingStage: stage)
-        case .loaded(let stage): configureViewForLoadedState(loadingStage: stage)
+    func configure(for state: State) {
+        DispatchQueue.main.async { [weak self] in
+            switch state {
+            case .empty: self?.configureViewForEmptyState()
+            case .noResult: self?.configureViewForNoResultState()
+            case .error(let errorMessage): self?.configureViewForErrorState(message: errorMessage)
+            case .loading(let stage): self?.configureViewForLoadingState(loadingStage: stage)
+            case .loaded(let stage): self?.configureViewForLoadedState(loadingStage: stage)
+            }
         }
     }
 
     private func configureViewForEmptyState() {
+        activityIndicator.isHidden = true
         fullScreenMessageLabel.isHidden = false
         fullScreenMessageLabel.text = "Start searching for a keyword"
     }
 
     private func configureViewForNoResultState() {
+        activityIndicator.isHidden = true
         fullScreenMessageLabel.isHidden = false
         fullScreenMessageLabel.text = "There are no results\nTry searching for another word"
     }
 
     private func configureViewForErrorState(message: String) {
+        activityIndicator.isHidden = true
         fullScreenMessageLabel.isHidden = false
         fullScreenMessageLabel.text = "Error occured\n\(message)"
     }
@@ -98,6 +95,7 @@ extension SearchViewController: SearchPresenterOutput {
         switch loadingStage {
         case .initial:
             activityIndicator.isHidden = false
+            collectionView.isHidden = true
             activityIndicator.startAnimating()
         case .iterative:
             loadingFooter.startAnimating()
@@ -110,6 +108,7 @@ extension SearchViewController: SearchPresenterOutput {
         switch loadingStage {
         case .initial:
             activityIndicator.isHidden = true
+            collectionView.isHidden = false
             activityIndicator.stopAnimating()
             collectionView.reloadData()
         case .iterative(let indexPaths):
@@ -124,13 +123,13 @@ extension SearchViewController: SearchPresenterOutput {
 extension SearchViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return cellModels.count
+        return presenter.cellModels.count
     }
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
-        cell.configure()
+        cell.configure(with: presenter.cellModels[indexPath.row])
 
         return cell
     }
@@ -148,11 +147,19 @@ extension SearchViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegate
+
+extension SearchViewController: UICollectionViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let bottomOffset = collectionView.contentSize.height - collectionView.bounds.size.height
+        if scrollView.contentOffset.y == bottomOffset { presenter.userDidScrollToBottom() }
+    }
+}
+
 // MARK: - UISearchBarDelegate
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        #warning("To Update: We should pass the text to the buisiness logic once implemented.")
-        print(searchText)
+        presenter.searchTextDidChange(text: searchText)
     }
 }
