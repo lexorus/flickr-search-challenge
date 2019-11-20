@@ -39,6 +39,7 @@ extension SearchPresenter: SearchPresenterInput {
     func searchTextDidChange(text: String) {
         guard text != searchPhotosFetcher.searchPhotosInfo?.searchString else { return }
         guard !text.isEmpty else {
+            searchPhotosFetcher.cancelCurrentRequest()
             view?.configure(for: .empty)
             return
         }

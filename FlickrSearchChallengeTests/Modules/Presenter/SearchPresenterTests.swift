@@ -61,6 +61,16 @@ final class SearchPresenterTests: XCTestCase {
         XCTAssertTrue(mockView.configureFuncCheck.wasCalled(with: .empty))
     }
 
+    func test_whenTextDidChangeToEmptyString_thenPhotosFetcherShouldCancelAnyActiveRequests() {
+        // GIVEN
+
+        // WHEN
+        presenter.searchTextDidChange(text: "")
+
+        // THEN
+        XCTAssertTrue(mockSearchedPhotosFetcher.cancelCurrentRequestFuncCheck.wasCalled)
+    }
+
     func test_whenTextDidChangeCalledWithLastSearchedString_thenConfigureConfigureShouldNotBeCalled() {
         // GIVEN
         let searchString = "query"

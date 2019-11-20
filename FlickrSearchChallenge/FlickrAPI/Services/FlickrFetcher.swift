@@ -12,12 +12,13 @@ final class FlickrFetcher {
         self.urlSession = urlSession
     }
 
-    func perform<T: Decodable>(_ request: FlickrRequest, callback: @escaping (Result<T, APIError>) -> Void) {
+    @discardableResult
+    func perform<T: Decodable>(_ request: FlickrRequest, callback: @escaping (Result<T, APIError>) -> Void) -> Cancellable {
         guard let urlRequest = requestBuilder.urlRequest(from: request) else {
             callback(.failure(.failedToBuildURLRequest))
-            return
+            return EmptyCancellable()
         }
-        perform(urlRequest) { (dataResult) in
+        return perform(urlRequest) { (dataResult) in
             let result = dataResult.flatMap { (data) -> Result<T, APIError> in
                 do {
                     let decodedModel = try self.decoder.decode(T.self, from: data)
@@ -30,16 +31,19 @@ final class FlickrFetcher {
         }
     }
 
-    func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) {
+    @discardableResult
+    func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
         guard let url = URL(string: stringURL) else {
             callback(.failure(.failedToBuildURLRequest))
-            return
+            return EmptyCancellable()
         }
-        perform(URLRequest(url: url), callback: callback)
+        return perform(URLRequest(url: url), callback: callback)
     }
 
-    private func perform(_ request: URLRequest, callback: @escaping (Result<Data, APIError>) -> Void) {
-        urlSession.perform(request) { (data, response, error) in
+    @discardableResult
+    private func perform(_ request: URLRequest, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
+        return urlSession.perform(request) { (data, response, error) in
+            if (error as NSError?)?.code == NSURLErrorCancelled { return }
             guard let response = response as? HTTPURLResponse,
                 (200..<300) ~= response.statusCode else {
                     callback(.failure(.apiError(error)))

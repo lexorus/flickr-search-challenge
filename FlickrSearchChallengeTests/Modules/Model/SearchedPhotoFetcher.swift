@@ -100,6 +100,19 @@ final class SearchedPhotoFetcher: XCTestCase {
         XCTAssertEqual(callbackResult, .error(error))
     }
 
+    func test_whenLoadFirstPageIsCalled_whenThereIsAnActiveRequest_thenTheActiveRequestShouldBeCancelled() {
+        // GIVEN
+        let text = "search text"
+        let callback: (SearchedPhotosFetcher.Result) -> Void = { _ in }
+
+        // WHEN
+        searchedPhotosFetcher.loadFirstPage(for: text, callback: callback)
+        searchedPhotosFetcher.loadFirstPage(for: text, callback: callback)
+
+        // THEN
+        XCTAssertTrue(mockFetcher.getPhotosCancellableStub.cancelFuncCheck.wasCalled)
+    }
+
     // MARK: - loadNextPage
 
     func test_whenLoadNextPageIsCalled_whenThereIsNoNextPage_thenCallbackShouldNotBeCalledWithAnyResult() {

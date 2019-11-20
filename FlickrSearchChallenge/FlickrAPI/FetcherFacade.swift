@@ -2,12 +2,16 @@ import Foundation
 
 protocol FetcherType {
     init(apiKey: String)
+
+    @discardableResult
     func getPhotos(for query: String,
                    pageNumber: UInt,
                    pageSize: UInt,
-                   callback: @escaping (Result<PhotosPage, APIError>) -> Void)
+                   callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable
+
+    @discardableResult
     func getImageData(for photo: Photo,
-                      callback: @escaping (Result<Data, APIError>) -> Void)
+                      callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable
 }
 
 final class Fetcher: FetcherType {
@@ -17,12 +21,13 @@ final class Fetcher: FetcherType {
         flickrFetcher = FlickrFetcher(apiKey: apiKey)
     }
 
+    @discardableResult
     func getPhotos(for query: String,
                    pageNumber: UInt,
                    pageSize: UInt,
-                   callback: @escaping (Result<PhotosPage, APIError>) -> Void) {
+                   callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
         let searchRequest = SearchPhotosRequest(query: query, page: pageNumber, pageSize: pageSize)
-        flickrFetcher.perform(searchRequest) { (flickrResult: Result<FlickrResponse<Photos>, APIError>) in
+        return flickrFetcher.perform(searchRequest) { (flickrResult: Result<FlickrResponse<Photos>, APIError>) in
             let result = flickrResult.flatMap { (flickrResponse) -> Result<PhotosPage, APIError> in
                 switch flickrResponse.result {
                 case .success(let photots): return .success(photots.photos)
@@ -33,8 +38,9 @@ final class Fetcher: FetcherType {
         }
     }
 
-    func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {
+    @discardableResult
+    func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
         let urlString = PhotoStringURLBuilder().urlString(for: photo)
-        flickrFetcher.getData(from: urlString, callback: callback)
+        return flickrFetcher.getData(from: urlString, callback: callback)
     }
 }
