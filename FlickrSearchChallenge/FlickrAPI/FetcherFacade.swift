@@ -1,24 +1,25 @@
 import Foundation
 
 protocol FetcherType {
-    init(apiKey: String)
-
     @discardableResult
     func getPhotos(for query: String,
                    pageNumber: UInt,
                    pageSize: UInt,
                    callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable
 
-    @discardableResult
     func getImageData(for photo: Photo,
-                      callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable
+                      callback: @escaping (Result<Data, APIError>) -> Void)
 }
 
 final class Fetcher: FetcherType {
-    private let flickrFetcher: FlickrFetcher
+    private let flickrFetcher: FlickrFetcherType
+    private let imageCacher: ImageCacherType
 
-    init(apiKey: String) {
-        flickrFetcher = FlickrFetcher(apiKey: apiKey)
+    init(apiKey: String,
+         flickrFetcher: FlickrFetcherType? = nil,
+         imageCacher: ImageCacherType = ImageCacher()) {
+        self.flickrFetcher = flickrFetcher ?? FlickrFetcher(apiKey: apiKey)
+        self.imageCacher = imageCacher
     }
 
     @discardableResult
@@ -38,9 +39,18 @@ final class Fetcher: FetcherType {
         }
     }
 
-    @discardableResult
-    func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
-        let urlString = PhotoStringURLBuilder().urlString(for: photo)
-        return flickrFetcher.getData(from: urlString, callback: callback)
+    func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {
+        imageCacher.getImageData(photo.id) { [weak self] (data) in
+            if let data = data {
+                callback(.success(data))
+                return
+            }
+            let urlString = PhotoStringURLBuilder().urlString(for: photo)
+            self?.flickrFetcher.getData(from: urlString) { [weak self] result in
+                callback(result)
+                guard let data = try? result.get() else { return }
+                self?.imageCacher.set(imageData: data, for: photo.id)
+            }
+        }
     }
 }

@@ -1,6 +1,15 @@
 import Foundation
 
-final class FlickrFetcher {
+protocol FlickrFetcherType {
+    @discardableResult
+    func perform<T: Decodable>(_ request: FlickrRequest,
+                               callback: @escaping (Result<T, APIError>) -> Void) -> Cancellable
+
+    func getData(from stringURL: String,
+                 callback: @escaping (Result<Data, APIError>) -> Void)
+}
+
+final class FlickrFetcher: FlickrFetcherType {
     private let requestBuilder: RequestBuilderType
     private let urlSession: URLSessionType
     private let decoder = JSONDecoder()
@@ -31,13 +40,12 @@ final class FlickrFetcher {
         }
     }
 
-    @discardableResult
-    func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
+    func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) {
         guard let url = URL(string: stringURL) else {
             callback(.failure(.failedToBuildURLRequest))
-            return EmptyCancellable()
+            return
         }
-        return perform(URLRequest(url: url), callback: callback)
+        perform(URLRequest(url: url), callback: callback)
     }
 
     @discardableResult

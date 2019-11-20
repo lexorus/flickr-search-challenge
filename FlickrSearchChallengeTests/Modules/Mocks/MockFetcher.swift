@@ -17,12 +17,8 @@ final class MockFetcher: FetcherType {
         return getPhotosCancellableStub
     }
 
-    var getImageDataCancellableStub: MockCancellable = MockCancellable()
     var getImageDataFuncCheck = FuncCheck<(Photo, (Result<Data, APIError>) -> Void)>()
-    @discardableResult
-    func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
+    func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {
         getImageDataFuncCheck.call((photo, callback))
-
-        return getImageDataCancellableStub
     }
 }
