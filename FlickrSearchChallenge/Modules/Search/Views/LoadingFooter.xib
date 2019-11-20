@@ -14,9 +14,9 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="SxP-yJ-9gO">
-                    <rect key="frame" x="141.5" y="6.5" width="37" height="37"/>
-                    <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="SxP-yJ-9gO">
+                    <rect key="frame" x="150" y="15" width="20" height="20"/>
+                    <color key="color" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                 </activityIndicatorView>
             </subviews>
             <constraints>

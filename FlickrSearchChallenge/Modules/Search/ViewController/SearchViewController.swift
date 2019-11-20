@@ -35,25 +35,12 @@ final class SearchViewController: UIViewController {
     private func setupCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.collectionViewLayout = collectionViewLayout
         collectionView.register(PhotoCell.self)
         collectionView.register(LoadingFooter.self, for: UICollectionView.elementKindSectionFooter)
     }
 
-    private var collectionViewLayout: UICollectionViewFlowLayout {
-        let itemsPerRow = 3
-        let interitemSpacing: CGFloat = 10
-        let inset: CGFloat = 10
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.minimumInteritemSpacing = interitemSpacing
-        flowLayout.minimumLineSpacing = interitemSpacing
-        flowLayout.sectionInset = .init(top: inset, left: inset, bottom: inset, right: inset)
-        let spacing = inset * 2 + interitemSpacing * CGFloat(itemsPerRow - 1)
-        let cellWidth = Int((collectionView.bounds.width - spacing) / CGFloat(itemsPerRow))
-        flowLayout.itemSize = .init(width: cellWidth, height: cellWidth)
-        flowLayout.footerReferenceSize = .init(width: collectionView.bounds.width, height: 50)
-
-        return flowLayout
+    private func dismissKeyboard() {
+        searchBar.resignFirstResponder()
     }
 }
 
@@ -151,8 +138,39 @@ extension SearchViewController: UICollectionViewDataSource {
 
 extension SearchViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        dismissKeyboard()
         let bottomOffset = collectionView.contentSize.height - collectionView.bounds.size.height
         if scrollView.contentOffset.y == bottomOffset { presenter.userDidScrollToBottom() }
+    }
+}
+
+// MARK: UICollectionViewDelegateFlowLayout
+
+extension SearchViewController: UICollectionViewDelegateFlowLayout {
+    private var itemsPerRow: Int { 3 }
+    private var interitemSpacing: CGFloat { 10 }
+    private var inset: CGFloat { 10 }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let spacing = inset * 2 + interitemSpacing * CGFloat(itemsPerRow - 1)
+        let cellWidth = Int((collectionView.bounds.width - spacing) / CGFloat(itemsPerRow))
+        return .init(width: cellWidth, height: cellWidth)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return .init(top: inset, left: inset, bottom: inset, right: inset)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return interitemSpacing
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return interitemSpacing
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        return .init(width: collectionView.bounds.width, height: 50)
     }
 }
 
@@ -161,5 +179,9 @@ extension SearchViewController: UICollectionViewDelegate {
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         presenter.searchTextDidChange(text: searchText)
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        dismissKeyboard()
     }
 }
