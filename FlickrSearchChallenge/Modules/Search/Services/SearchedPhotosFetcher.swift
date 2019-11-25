@@ -13,13 +13,14 @@ final class SearchedPhotosFetcher: SearchedPhotosFetcherType {
     private let pageSize: UInt = 21
     private let fetcher: FetcherType
     private(set) var searchPhotosInfo: (searchString: String, paginator: Paginator)?
-    private var currentRequest: Cancellable?
+    private(set) weak var currentRequest: Cancellable?
 
     init(fetcher: FetcherType) {
         self.fetcher = fetcher
     }
 
     func cancelCurrentRequest() {
+        searchPhotosInfo = nil
         currentRequest?.cancel()
         currentRequest = nil
     }

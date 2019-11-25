@@ -1,10 +1,10 @@
 import Foundation
 
-protocol Cancellable {
+protocol Cancellable: class {
     func cancel()
 }
 
-struct EmptyCancellable: Cancellable {
+final class EmptyCancellable: Cancellable {
     func cancel() {
         debugPrint("Nothing to cancel")
     }

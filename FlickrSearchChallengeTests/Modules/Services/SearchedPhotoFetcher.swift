@@ -25,6 +25,45 @@ final class SearchedPhotoFetcher: XCTestCase {
         mockFetcher.getPhotosFuncCheck.arguments?.3(.success(photosPage))
     }
 
+    // MARK: - cancelCurrentRequest
+
+    func test_whenCancellingCurrentRequest_thenSearchPhotosInfoShouldBeCleared() {
+        // GIVEN
+        let text = "search text"
+        let pageSize: UInt = 2
+        let numberOfPages: UInt = 2
+        let stubPhotosPage = PhotosPage.mocked(totalNumberOfPages: numberOfPages,
+                                               itemsPerPage: pageSize)
+        searchedPhotosFetcher.loadFirstPage(for: text, callback: { _ in })
+        mockFetcher.getPhotosFuncCheck.arguments?.3(.success(stubPhotosPage))
+
+        // WHEN
+        searchedPhotosFetcher.cancelCurrentRequest()
+
+        // THEN
+        XCTAssertNil(searchedPhotosFetcher.searchPhotosInfo)
+    }
+
+    func test_whenCancellingCurrentRequest_thenCurrentReqeustShouldBeCanceledAndNullitied() {
+        // GIVEN
+        let text = "search text"
+        let pageSize: UInt = 2
+        let numberOfPages: UInt = 2
+        let stubPhotosPage = PhotosPage.mocked(totalNumberOfPages: numberOfPages,
+                                               itemsPerPage: pageSize)
+        let mockCancellable = MockCancellable()
+        mockFetcher.getPhotosCancellableStub = mockCancellable
+        searchedPhotosFetcher.loadFirstPage(for: text, callback: { _ in })
+        mockFetcher.getPhotosFuncCheck.arguments?.3(.success(stubPhotosPage))
+
+        // WHEN
+        searchedPhotosFetcher.cancelCurrentRequest()
+
+        // THEN
+        XCTAssertTrue(mockCancellable.cancelFuncCheck.wasCalled)
+        XCTAssertNil(searchedPhotosFetcher.currentRequest)
+    }
+
     // MARK: - loadFirstPage
 
     func test_whenLoadFirstPageIsCalled_whenGetPhotosSucceeds_thenTheRightSearchPhotosInfoIsSet() {
