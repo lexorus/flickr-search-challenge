@@ -25,6 +25,7 @@ final class SearchViewController: UIViewController {
 
         setupsearchBar()
         setupCollectionView()
+        setupKeyboardDismissal()
         presenter.viewDidLoad()
     }
 
@@ -39,7 +40,13 @@ final class SearchViewController: UIViewController {
         collectionView.register(LoadingFooter.self, for: UICollectionView.elementKindSectionFooter)
     }
 
-    private func dismissKeyboard() {
+    private func setupKeyboardDismissal() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc func dismissKeyboard() {
         searchBar.resignFirstResponder()
     }
 }
@@ -53,8 +60,8 @@ extension SearchViewController: SearchPresenterOutput {
             case .empty: self?.configureViewForEmptyState()
             case .noResult: self?.configureViewForNoResultState()
             case .error(let errorMessage): self?.configureViewForErrorState(message: errorMessage)
-            case .loading(let stage): self?.configureViewForLoadingState(loadingStage: stage)
-            case .loaded(let stage): self?.configureViewForLoadedState(loadingStage: stage)
+            case .loading(let stage): self?.configureViewForLoadingState(stage: stage)
+            case .loaded(let stage): self?.configureViewForLoadedState(stage: stage)
             }
         }
     }
@@ -77,9 +84,9 @@ extension SearchViewController: SearchPresenterOutput {
         fullScreenMessageLabel.text = "Error occured\n\(message)"
     }
 
-    private func configureViewForLoadingState(loadingStage: State.LoadingStage) {
+    private func configureViewForLoadingState(stage: State.LoadingStage) {
         fullScreenMessageLabel.isHidden = true
-        switch loadingStage {
+        switch stage {
         case .initial:
             activityIndicator.isHidden = false
             collectionView.isHidden = true
@@ -90,14 +97,16 @@ extension SearchViewController: SearchPresenterOutput {
         }
     }
 
-    private func configureViewForLoadedState(loadingStage: State.LoadingStage) {
+    private func configureViewForLoadedState(stage: State.LoadingStage) {
         fullScreenMessageLabel.isHidden = true
-        switch loadingStage {
+        switch stage {
         case .initial:
             activityIndicator.isHidden = true
             collectionView.isHidden = false
             activityIndicator.stopAnimating()
             collectionView.reloadData()
+            collectionView.scrollToItem(at: .init(row: 0, section: 0),
+                                        at: .top, animated: false)
         case .iterative(let indexPaths):
             loadingFooter.stopAnimating()
             collectionView.insertItems(at: indexPaths)
@@ -138,9 +147,12 @@ extension SearchViewController: UICollectionViewDataSource {
 
 extension SearchViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        dismissKeyboard()
         let bottomOffset = collectionView.contentSize.height - collectionView.bounds.size.height
         if scrollView.contentOffset.y == bottomOffset { presenter.userDidScrollToBottom() }
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        dismissKeyboard()
     }
 }
 
