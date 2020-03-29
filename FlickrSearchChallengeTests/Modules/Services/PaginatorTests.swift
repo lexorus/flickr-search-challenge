@@ -1,5 +1,5 @@
 import XCTest
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 final class PaginatorTests: XCTestCase {
 

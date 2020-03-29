@@ -1,5 +1,5 @@
 import Foundation
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 final class MockURLSession: URLSessionType {
     var performStub = MockCancellable()

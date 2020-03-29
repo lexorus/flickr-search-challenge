@@ -1,5 +1,5 @@
 import Foundation
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 extension Photo {
     static func mocked(id: String = "id",

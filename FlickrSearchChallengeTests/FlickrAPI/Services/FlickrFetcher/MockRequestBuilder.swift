@@ -1,5 +1,5 @@
 import Foundation
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 final class MockRequestBuilder: RequestBuilderType {
     let apiKey: String

@@ -1,5 +1,5 @@
 import XCTest
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 class FlickrResponseTests: XCTestCase {
     func test_whenDecodingSuccessfulSearchPhotosRepsonse_thenDecodingSucceeds() {

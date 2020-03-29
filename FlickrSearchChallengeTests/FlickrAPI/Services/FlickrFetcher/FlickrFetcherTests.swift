@@ -1,5 +1,5 @@
 import XCTest
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 class FlickrFetcherTests: XCTestCase {
     typealias SampleResult = Result<String, APIError>

@@ -1,5 +1,5 @@
 import Foundation
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 extension PhotosPage {
     static func mocked(pageNumber: UInt = 1,

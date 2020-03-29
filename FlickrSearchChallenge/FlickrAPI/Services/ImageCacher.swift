@@ -8,7 +8,7 @@ protocol ImageCacherType {
 
 final class ImageCacher: ImageCacherType {
     private let cache = Atomic<NSCache<NSString, NSData>>(.init())
-    private let queue = DispatchQueue(label: "com.lexorus.FlickrSearchChallenge.ImageCacher", qos: .utility)
+    private let queue = DispatchQueue(label: "com.lexorus.FlickrSearch.ImageCacher", qos: .utility)
 
     func getImageData(_ id: String, callback: @escaping (Data?) -> Void) {
         queue.async { [weak self] in

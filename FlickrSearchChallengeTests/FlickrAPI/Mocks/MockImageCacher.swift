@@ -1,5 +1,5 @@
 import Foundation
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 final class MockImageCacher: ImageCacherType {
     var getImageDataFuncCheck = FuncCheck<(String, (Data?) -> Void)>()

@@ -1,5 +1,5 @@
 import XCTest
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 class RequestBuilderTests: XCTestCase {
     let apiKey = "some_api_key"

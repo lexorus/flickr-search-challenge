@@ -1,5 +1,5 @@
 import Foundation
-@testable import FlickrSearchChallenge
+@testable import FlickrSearch
 
 final class MockFlickrFetcher<M: Decodable>: FlickrFetcherType {
     var performCancellableStub = MockCancellable()
