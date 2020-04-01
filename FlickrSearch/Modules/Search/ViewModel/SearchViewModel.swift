@@ -8,7 +8,7 @@ final class SearchViewModel {
 
     let viewState = BehaviorSubject(value: SearchViewController.State.empty)
     let items = BehaviorSubject(value: [PhotoCell.Model]())
-    let searchText = BehaviorSubject(value: "")
+    let searchText = BehaviorSubject(value: String.empty)
     let isScrolledToBottom = BehaviorSubject(value: false)
 
     init(fetcher: FetcherType = Fetcher(apiKey: "3e7cc266ae2b0e0d78e279ce8e361736"),
@@ -67,7 +67,7 @@ final class SearchViewModel {
 
     private func loadNextPage() {
         guard let paginator = searchPhotosFetcher.searchPhotosInfo?.paginator, !paginator.isLastPage else { return }
-        viewState.onNext(.loaded(.iterative([])))
+        viewState.onNext(.loading(.iterative))
         searchPhotosFetcher.loadNextPage { [weak self] result in
             self?.process(nextPageLoadResult: result)
         }
@@ -76,15 +76,15 @@ final class SearchViewModel {
     private func process(nextPageLoadResult result: SearchedPhotosFetcher.Result) {
         switch result {
         case .empty:
-            viewState.onNext(.loaded(.iterative([])))
+            viewState.onNext(.loaded(.iterative))
         case .photos(let photos):
             let currentModels = (try? items.value()) ?? []
             let newModels = photos.map(photoCellModel)
             items.onNext(currentModels + newModels)
-            viewState.onNext(.loaded(.iterative([])))
+            viewState.onNext(.loaded(.iterative))
         case .error(let error):
             debugPrint("Failed to load next page with error: \(error)")
-            viewState.onNext(.loaded(.iterative([])))
+            viewState.onNext(.loaded(.iterative))
         }
     }
 }

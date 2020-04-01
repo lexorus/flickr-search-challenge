@@ -1,17 +1,9 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
-protocol SearchPresenterOutput: class {
-    func configure(for state: SearchViewController.State)
-}
-
-protocol SearchPresenterInput {
-    var cellModels: [PhotoCell.Model] { get }
-    func viewDidLoad()
-    func searchTextDidChange(text: String)
-    func userDidScrollToBottom()
-}
+typealias CollectionViewDataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, PhotoCell.Model>>
 
 final class SearchViewController: UIViewController {
     private weak var loadingFooter: LoadingFooter!
@@ -19,6 +11,13 @@ final class SearchViewController: UIViewController {
     @IBOutlet private weak var fullScreenMessageLabel: UILabel!
     @IBOutlet private weak var searchBar: UISearchBar!
     @IBOutlet private weak var collectionView: UICollectionView!
+
+    private let dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, PhotoCell.Model>>(configureCell: { (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
+        let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
+        cell.configure(with: item)
+
+        return cell
+    })
 
     private let viewModel = SearchViewModel()
     private let disposeBag = DisposeBag()
@@ -30,6 +29,7 @@ final class SearchViewController: UIViewController {
         bindSearchBar()
         bindScrollView()
         setupCollectionView()
+        setupCollectionViewLoadingFooter()
         bindCollectionView()
         setupKeyboardDismissal()
     }
@@ -46,9 +46,9 @@ final class SearchViewController: UIViewController {
     private func bindSearchBar() {
         searchBar.rx.text
             .orEmpty
-            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+            .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
-            .asDriver(onErrorJustReturn: "")
+            .asDriver(onErrorJustReturn: .empty)
             .drive(viewModel.searchText)
             .disposed(by: disposeBag)
 
@@ -71,18 +71,30 @@ final class SearchViewController: UIViewController {
             .disposed(by: disposeBag)
     }
 
-    private func bindCollectionView() {
-        viewModel.items
-            .asObservable()
-            .bind(to: self.collectionView.rx.items(cellIdentifier: PhotoCell.id, cellType: PhotoCell.self)) { row, data, cell in
-                cell.configure(with: data)
-        }.disposed(by: disposeBag)
-    }
-
     private func setupCollectionView() {
         collectionView.delegate = self
         collectionView.register(PhotoCell.self)
         collectionView.register(LoadingFooter.self, for: UICollectionView.elementKindSectionFooter)
+    }
+
+    private func setupCollectionViewLoadingFooter() {
+        dataSource.configureSupplementaryView = { dataSource, collectionView, string, indexPath in
+            guard string == UICollectionView.elementKindSectionFooter else { return UICollectionReusableView() }
+            let loadingFooter = collectionView.dequeue(LoadingFooter.self,
+                                                       at: indexPath,
+                                                       for: UICollectionView.elementKindSectionFooter)
+            self.loadingFooter = loadingFooter
+
+            return loadingFooter
+        }
+    }
+
+    private func bindCollectionView() {
+        viewModel.items
+            .observeOn(MainScheduler.instance)
+            .map { return [AnimatableSectionModel(model: .empty, items: $0)] }
+            .bind(to: collectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
     }
 
     private func setupKeyboardDismissal() {
@@ -96,18 +108,16 @@ final class SearchViewController: UIViewController {
     }
 }
 
-// MARK: - SearchPresenterOutput
+// MARK: - View state configuration
 
-extension SearchViewController: SearchPresenterOutput {
-    func configure(for state: State) {
-        DispatchQueue.main.async { [weak self] in
-            switch state {
-            case .empty: self?.configureViewForEmptyState()
-            case .noResult: self?.configureViewForNoResultState()
-            case .error(let errorMessage): self?.configureViewForErrorState(message: errorMessage)
-            case .loading(let stage): self?.configureViewForLoadingState(stage: stage)
-            case .loaded(let stage): self?.configureViewForLoadedState(stage: stage)
-            }
+extension SearchViewController {
+    private func configure(for state: State) {
+        switch state {
+        case .empty: configureViewForEmptyState()
+        case .noResult: configureViewForNoResultState()
+        case .error(let errorMessage): configureViewForErrorState(message: errorMessage)
+        case .loading(let stage): configureViewForLoadingState(stage: stage)
+        case .loaded(let stage): configureViewForLoadedState(stage: stage)
         }
     }
 
@@ -138,7 +148,6 @@ extension SearchViewController: SearchPresenterOutput {
             activityIndicator.startAnimating()
         case .iterative:
             loadingFooter.startAnimating()
-
         }
     }
 
@@ -156,35 +165,6 @@ extension SearchViewController: SearchPresenterOutput {
         }
     }
 }
-
-//// MARK: - UICollectionViewDataSource
-//
-//extension SearchViewController: UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView,
-//                        numberOfItemsInSection section: Int) -> Int {
-//        return presenter.cellModels.count
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView,
-//                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
-//        cell.configure(with: presenter.cellModels[indexPath.row])
-//
-//        return cell
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView,
-//                        viewForSupplementaryElementOfKind kind: String,
-//                        at indexPath: IndexPath) -> UICollectionReusableView {
-//        guard kind == UICollectionView.elementKindSectionFooter else { return UICollectionReusableView() }
-//        let loadingFooter = collectionView.dequeue(LoadingFooter.self,
-//                                                   at: indexPath,
-//                                                   for: UICollectionView.elementKindSectionFooter)
-//        self.loadingFooter = loadingFooter
-//
-//        return loadingFooter
-//    }
-//}
 
 // MARK: UICollectionViewDelegateFlowLayout
 

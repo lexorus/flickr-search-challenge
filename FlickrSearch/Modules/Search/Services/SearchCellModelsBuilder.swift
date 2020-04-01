@@ -19,6 +19,6 @@ final class SearchCellModelsBuilder {
             }
         }
 
-        return .init(imageClosure: imageClosure)
+        return .init(id: photo.id, imageClosure: imageClosure)
     }
 }

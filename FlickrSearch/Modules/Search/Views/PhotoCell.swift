@@ -1,4 +1,5 @@
 import UIKit
+import RxDataSources
 
 final class PhotoCell: UICollectionViewCell, IdentifiableType {
     static let id = "PhotoCell"
@@ -35,7 +36,14 @@ final class PhotoCell: UICollectionViewCell, IdentifiableType {
         imageView.image = nil
     }
 
-    struct Model {
+    struct Model: Equatable, RxDataSources.IdentifiableType {
+        let id: String
         let imageClosure: (@escaping (UIImage) -> Void) -> Void
+
+        var identity: String { id }
+
+        static func == (lhs: Model, rhs: Model) -> Bool {
+            return lhs.id == rhs.id
+        }
     }
 }
