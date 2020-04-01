@@ -1,4 +1,6 @@
 import UIKit
+import RxSwift
+import RxCocoa
 
 protocol SearchPresenterOutput: class {
     func configure(for state: SearchViewController.State)
@@ -20,6 +22,10 @@ final class SearchViewController: UIViewController {
 
     private lazy var presenter: SearchPresenterInput = { SearchPresenter(view: self) }()
 
+
+    let viewModel = SearchViewModel()
+    let disposeBag = DisposeBag()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,6 +33,49 @@ final class SearchViewController: UIViewController {
         setupCollectionView()
         setupKeyboardDismissal()
         presenter.viewDidLoad()
+
+
+        // MVVM
+        bindSearchBar()
+        bindScrollView()
+        bindCollectionView()
+    }
+
+    private func bindSearchBar() {
+        searchBar.rx.text
+            .orEmpty
+            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: "")
+            .drive(viewModel.searchText)
+            .disposed(by: disposeBag)
+
+        searchBar.rx.searchButtonClicked
+            .bind(onNext: dismissKeyboard)
+            .disposed(by: disposeBag)
+    }
+
+    private func bindScrollView() {
+        collectionView.rx.contentOffset
+            .map {
+                let bottomOffset = self.collectionView.contentSize.height - self.collectionView.bounds.size.height
+                return $0.y == bottomOffset }
+            .asDriver(onErrorJustReturn: false)
+            .drive(viewModel.isScrolledToBottom)
+            .disposed(by: disposeBag)
+
+        collectionView.rx.willBeginDragging
+            .bind(onNext: dismissKeyboard)
+            .disposed(by: disposeBag)
+    }
+
+    private func bindCollectionView() {
+        viewModel.items
+            .asObservable()
+            .bind(to: self.collectionView.rx.items(cellIdentifier: PhotoCell.id, cellType: PhotoCell.self)) { row, data, cell in
+                cell.configure(with: data)
+        }.disposed(by: disposeBag)
+
     }
 
     private func setupsearchBar() {
@@ -150,10 +199,6 @@ extension SearchViewController: UICollectionViewDelegate {
         let bottomOffset = collectionView.contentSize.height - collectionView.bounds.size.height
         if scrollView.contentOffset.y == bottomOffset { presenter.userDidScrollToBottom() }
     }
-
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        dismissKeyboard()
-    }
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
@@ -191,9 +236,5 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         presenter.searchTextDidChange(text: searchText)
-    }
-
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        dismissKeyboard()
     }
 }
