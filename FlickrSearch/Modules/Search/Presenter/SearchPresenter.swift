@@ -1,6 +1,24 @@
 import Foundation
 import UIKit
 
+final class StubPresenter: SearchPresenterInput {
+    init() {}
+
+    var cellModels: [PhotoCell.Model] = []
+
+    func viewDidLoad() {
+
+    }
+
+    func searchTextDidChange(text: String) {
+
+    }
+
+    func userDidScrollToBottom() {
+
+    }
+}
+
 final class SearchPresenter {
     private let fetcher: FetcherType
     private let searchPhotosFetcher: SearchedPhotosFetcherType

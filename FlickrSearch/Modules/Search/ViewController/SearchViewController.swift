@@ -20,25 +20,27 @@ final class SearchViewController: UIViewController {
     @IBOutlet private weak var searchBar: UISearchBar!
     @IBOutlet private weak var collectionView: UICollectionView!
 
-    private lazy var presenter: SearchPresenterInput = { SearchPresenter(view: self) }()
-
-
-    let viewModel = SearchViewModel()
-    let disposeBag = DisposeBag()
+    private let viewModel = SearchViewModel()
+    private let disposeBag = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupsearchBar()
-        setupCollectionView()
-        setupKeyboardDismissal()
-        presenter.viewDidLoad()
-
-
-        // MVVM
+        bindViewState()
         bindSearchBar()
         bindScrollView()
+        setupCollectionView()
         bindCollectionView()
+        setupKeyboardDismissal()
+    }
+
+    private func bindViewState() {
+        viewModel.viewState.asObserver()
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] viewState in
+                guard let welf = self else { return }
+                welf.configure(for: viewState)
+            }).disposed(by: disposeBag)
     }
 
     private func bindSearchBar() {
@@ -75,15 +77,9 @@ final class SearchViewController: UIViewController {
             .bind(to: self.collectionView.rx.items(cellIdentifier: PhotoCell.id, cellType: PhotoCell.self)) { row, data, cell in
                 cell.configure(with: data)
         }.disposed(by: disposeBag)
-
-    }
-
-    private func setupsearchBar() {
-        searchBar.delegate = self
     }
 
     private func setupCollectionView() {
-        collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(PhotoCell.self)
         collectionView.register(LoadingFooter.self, for: UICollectionView.elementKindSectionFooter)
@@ -153,53 +149,42 @@ extension SearchViewController: SearchPresenterOutput {
             activityIndicator.isHidden = true
             collectionView.isHidden = false
             activityIndicator.stopAnimating()
-            collectionView.reloadData()
             collectionView.scrollToItem(at: .init(row: 0, section: 0),
                                         at: .top, animated: false)
-        case .iterative(let indexPaths):
+        case .iterative:
             loadingFooter.stopAnimating()
-            collectionView.insertItems(at: indexPaths)
         }
     }
 }
 
-// MARK: - UICollectionViewDataSource
-
-extension SearchViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
-        return presenter.cellModels.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
-        cell.configure(with: presenter.cellModels[indexPath.row])
-
-        return cell
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionFooter else { return UICollectionReusableView() }
-        let loadingFooter = collectionView.dequeue(LoadingFooter.self,
-                                                   at: indexPath,
-                                                   for: UICollectionView.elementKindSectionFooter)
-        self.loadingFooter = loadingFooter
-
-        return loadingFooter
-    }
-}
-
-// MARK: - UICollectionViewDelegate
-
-extension SearchViewController: UICollectionViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let bottomOffset = collectionView.contentSize.height - collectionView.bounds.size.height
-        if scrollView.contentOffset.y == bottomOffset { presenter.userDidScrollToBottom() }
-    }
-}
+//// MARK: - UICollectionViewDataSource
+//
+//extension SearchViewController: UICollectionViewDataSource {
+//    func collectionView(_ collectionView: UICollectionView,
+//                        numberOfItemsInSection section: Int) -> Int {
+//        return presenter.cellModels.count
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView,
+//                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
+//        cell.configure(with: presenter.cellModels[indexPath.row])
+//
+//        return cell
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView,
+//                        viewForSupplementaryElementOfKind kind: String,
+//                        at indexPath: IndexPath) -> UICollectionReusableView {
+//        guard kind == UICollectionView.elementKindSectionFooter else { return UICollectionReusableView() }
+//        let loadingFooter = collectionView.dequeue(LoadingFooter.self,
+//                                                   at: indexPath,
+//                                                   for: UICollectionView.elementKindSectionFooter)
+//        self.loadingFooter = loadingFooter
+//
+//        return loadingFooter
+//    }
+//}
 
 // MARK: UICollectionViewDelegateFlowLayout
 
@@ -228,13 +213,5 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         return .init(width: collectionView.bounds.width, height: 50)
-    }
-}
-
-// MARK: - UISearchBarDelegate
-
-extension SearchViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        presenter.searchTextDidChange(text: searchText)
     }
 }
