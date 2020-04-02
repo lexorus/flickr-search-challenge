@@ -13,11 +13,9 @@ final class SearchViewModel {
 
     init(fetcher: FetcherType = Fetcher(apiKey: "3e7cc266ae2b0e0d78e279ce8e361736"),
          searchPhotosFetcher: SearchedPhotosFetcherType? = nil) {
-        // Internals init
         self.fetcher = fetcher
         self.searchPhotosFetcher = searchPhotosFetcher ?? SearchedPhotosFetcher(fetcher: fetcher)
 
-        // Subscriptions
         searchText.asObserver()
             .distinctUntilChanged()
             .subscribe(onNext: searchTextDidChange(text:))
@@ -51,7 +49,7 @@ final class SearchViewModel {
             items.onNext(photos.map(photoCellModel))
             viewState.onNext(.loaded(.initial))
         case .error(let error):
-            viewState.onNext(.error(error.localizedDescription))
+            viewState.onNext(.error(error.description))
         }
     }
 
@@ -83,7 +81,7 @@ final class SearchViewModel {
             items.onNext(currentModels + newModels)
             viewState.onNext(.loaded(.iterative))
         case .error(let error):
-            debugPrint("Failed to load next page with error: \(error)")
+            debugPrint("Failed to load next page. Error: \(error.description)")
             viewState.onNext(.loaded(.iterative))
         }
     }
