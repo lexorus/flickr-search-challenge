@@ -4,9 +4,7 @@ final class SearchCellModelsBuilder {
     typealias ImageDataProvider = ((Photo), @escaping (Result<Data, APIError>) -> Void) -> Void
 
     func photoCellModel(for photo: Photo, imageProvider: ImageDataProvider?) -> PhotoCell.Model {
-        // Noticed that Flickr can return multiple photos with the same id in one response
-        // Which will break the animated collection logic
-        let id = UUID().uuidString // photo.id
+        let id = photo.id
         let imageClosure: (@escaping (UIImage) -> Void) -> Void = { closure in
             imageProvider?(photo) { (result) in
                 switch result {

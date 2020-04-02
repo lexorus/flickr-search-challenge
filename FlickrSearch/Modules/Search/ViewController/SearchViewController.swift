@@ -156,7 +156,6 @@ extension SearchViewController {
         switch stage {
         case .initial:
             activityIndicator.isHidden = false
-            collectionView.isHidden = true
             activityIndicator.startAnimating()
         case .iterative:
             loadingFooter.startAnimating()
@@ -168,7 +167,6 @@ extension SearchViewController {
         switch stage {
         case .initial:
             activityIndicator.isHidden = true
-            collectionView.isHidden = false
             activityIndicator.stopAnimating()
             collectionView.contentOffset = CGPoint(x: 0, y: 0)
         case .iterative:
