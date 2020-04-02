@@ -56,15 +56,14 @@
 		65CC7001238493DB00406610 /* SearchedPhotoFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC7000238493DB00406610 /* SearchedPhotoFetcher.swift */; };
 		65CC70032384968700406610 /* MockPhotosPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC70022384968700406610 /* MockPhotosPage.swift */; };
 		65CC70052384990B00406610 /* MockPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC70042384990B00406610 /* MockPhoto.swift */; };
-		65CC70082384A35600406610 /* SearchPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC70072384A35600406610 /* SearchPresenterTests.swift */; };
 		65CC700B2384A45F00406610 /* MockSearchedPhotosFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC700A2384A45F00406610 /* MockSearchedPhotosFetcher.swift */; };
-		65CC700D2384A58A00406610 /* MockSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC700C2384A58A00406610 /* MockSearchViewController.swift */; };
 		65CC700F2384ABAE00406610 /* MockPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC700E2384ABAE00406610 /* MockPaginator.swift */; };
 		65E07DB723834F4700384B72 /* UICollectionViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */; };
 		65E07DBA23834F8300384B72 /* IdentifiableType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DB923834F8300384B72 /* IdentifiableType.swift */; };
 		65E07DBC238352C700384B72 /* SearchViewControllerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DBB238352C700384B72 /* SearchViewControllerState.swift */; };
 		B1429BD324334088001478D4 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1429BD224334088001478D4 /* SearchViewModel.swift */; };
 		B174F9452434B25C00A9A4A8 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B174F9442434B25C00A9A4A8 /* StringExtensions.swift */; };
+		B1E26C5C243601DD00EA9664 /* SearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E26C5B243601DD00EA9664 /* SearchViewModelTests.swift */; };
 		B1FD2D572435E64E00871D76 /* UICollectionViewLayoutBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FD2D562435E64E00871D76 /* UICollectionViewLayoutBuilder.swift */; };
 		BF82625D2B51FCBCE47D9A38 /* Pods_FlickrSearchTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DE6337BAAFF2CCD03778C3E /* Pods_FlickrSearchTests.framework */; };
 		F2416D84E1CC93BF65E45E26 /* Pods_FlickrSearch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0E03A7BA6FB6330536CE24 /* Pods_FlickrSearch.framework */; };
@@ -136,9 +135,7 @@
 		65CC7000238493DB00406610 /* SearchedPhotoFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchedPhotoFetcher.swift; sourceTree = "<group>"; };
 		65CC70022384968700406610 /* MockPhotosPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPhotosPage.swift; sourceTree = "<group>"; };
 		65CC70042384990B00406610 /* MockPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPhoto.swift; sourceTree = "<group>"; };
-		65CC70072384A35600406610 /* SearchPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPresenterTests.swift; sourceTree = "<group>"; };
 		65CC700A2384A45F00406610 /* MockSearchedPhotosFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSearchedPhotosFetcher.swift; sourceTree = "<group>"; };
-		65CC700C2384A58A00406610 /* MockSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSearchViewController.swift; sourceTree = "<group>"; };
 		65CC700E2384ABAE00406610 /* MockPaginator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaginator.swift; sourceTree = "<group>"; };
 		65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewExtensions.swift; sourceTree = "<group>"; };
 		65E07DB923834F8300384B72 /* IdentifiableType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableType.swift; sourceTree = "<group>"; };
@@ -148,6 +145,7 @@
 		B10633D711DAEF45EE93425C /* Pods-FlickrSearch.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickrSearch.debug.xcconfig"; path = "Target Support Files/Pods-FlickrSearch/Pods-FlickrSearch.debug.xcconfig"; sourceTree = "<group>"; };
 		B1429BD224334088001478D4 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		B174F9442434B25C00A9A4A8 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		B1E26C5B243601DD00EA9664 /* SearchViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModelTests.swift; sourceTree = "<group>"; };
 		B1FD2D562435E64E00871D76 /* UICollectionViewLayoutBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewLayoutBuilder.swift; sourceTree = "<group>"; };
 		CD5E5D7B0FF0F6ECD6DA3858 /* Pods-FlickrSearch.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickrSearch.release.xcconfig"; path = "Target Support Files/Pods-FlickrSearch/Pods-FlickrSearch.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -424,7 +422,7 @@
 			isa = PBXGroup;
 			children = (
 				65CC70092384A43500406610 /* Mocks */,
-				65CC70062384A34600406610 /* Presenter */,
+				65CC70062384A34600406610 /* ViewModel */,
 				65CC6FFA2384894200406610 /* Services */,
 			);
 			path = Modules;
@@ -439,12 +437,12 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		65CC70062384A34600406610 /* Presenter */ = {
+		65CC70062384A34600406610 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				65CC70072384A35600406610 /* SearchPresenterTests.swift */,
+				B1E26C5B243601DD00EA9664 /* SearchViewModelTests.swift */,
 			);
-			path = Presenter;
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		65CC70092384A43500406610 /* Mocks */ = {
@@ -452,7 +450,6 @@
 			children = (
 				65CC6FFE2384926700406610 /* MockFetcher.swift */,
 				65CC700A2384A45F00406610 /* MockSearchedPhotosFetcher.swift */,
-				65CC700C2384A58A00406610 /* MockSearchViewController.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -740,7 +737,6 @@
 				65CC6FFC2384895E00406610 /* PaginatorTests.swift in Sources */,
 				653EC70D238143D9007F1404 /* FlickrResponseTests.swift in Sources */,
 				65C932E32381EF5A00460C36 /* MockRequestBuilder.swift in Sources */,
-				65CC700D2384A58A00406610 /* MockSearchViewController.swift in Sources */,
 				65CC6FFF2384926700406610 /* MockFetcher.swift in Sources */,
 				65C932E82381F7B300460C36 /* MockSearchPhotosRequest.swift in Sources */,
 				65C932E12381EE2D00460C36 /* MockCancellable.swift in Sources */,
@@ -749,6 +745,7 @@
 				653EC72823816CEC007F1404 /* FlickrFetcherTests.swift in Sources */,
 				651C017823855B79003BE167 /* MockImageCacher.swift in Sources */,
 				65BE5C8723816E0500801102 /* MockURLSession.swift in Sources */,
+				B1E26C5C243601DD00EA9664 /* SearchViewModelTests.swift in Sources */,
 				65C932EE2381F9D500460C36 /* MockURLRequest.swift in Sources */,
 				65C932EA2381F85800460C36 /* MockHTTPURLResponse.swift in Sources */,
 				65CC700B2384A45F00406610 /* MockSearchedPhotosFetcher.swift in Sources */,
@@ -756,7 +753,6 @@
 				651C017523855B11003BE167 /* FetcherFacadeTests.swift in Sources */,
 				653EC7102381450D007F1404 /* DataExtensions.swift in Sources */,
 				65CC70032384968700406610 /* MockPhotosPage.swift in Sources */,
-				65CC70082384A35600406610 /* SearchPresenterTests.swift in Sources */,
 				65CC70052384990B00406610 /* MockPhoto.swift in Sources */,
 				65CC7001238493DB00406610 /* SearchedPhotoFetcher.swift in Sources */,
 				65CC700F2384ABAE00406610 /* MockPaginator.swift in Sources */,
