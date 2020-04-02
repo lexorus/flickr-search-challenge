@@ -37,7 +37,7 @@ final class SearchViewModel {
             viewState.onNext(.empty)
             return
         }
-        viewState.onNext(.loaded(.initial))
+        viewState.onNext(.loading(.initial))
         searchPhotosFetcher.loadFirstPage(for: text) { [weak self] (result) in
             self?.process(initialLoadResult: result)
         }
