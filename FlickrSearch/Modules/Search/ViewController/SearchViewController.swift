@@ -1,15 +1,10 @@
 import UIKit
+import RxSwift
+import RxCocoa
+import RxDataSources
 
-protocol SearchPresenterOutput: class {
-    func configure(for state: SearchViewController.State)
-}
-
-protocol SearchPresenterInput {
-    var cellModels: [PhotoCell.Model] { get }
-    func viewDidLoad()
-    func searchTextDidChange(text: String)
-    func userDidScrollToBottom()
-}
+private typealias CollectionViewSection = AnimatableSectionModel<String, PhotoCell.Model>
+private typealias CollectionViewDataSource = RxCollectionViewSectionedAnimatedDataSource<CollectionViewSection>
 
 final class SearchViewController: UIViewController {
     private weak var loadingFooter: LoadingFooter!
@@ -18,26 +13,100 @@ final class SearchViewController: UIViewController {
     @IBOutlet private weak var searchBar: UISearchBar!
     @IBOutlet private weak var collectionView: UICollectionView!
 
-    private lazy var presenter: SearchPresenterInput = { SearchPresenter(view: self) }()
+    private let viewModel = SearchViewModel()
+    private let disposeBag = DisposeBag()
+
+    private let dataSource = CollectionViewDataSource(configureCell: {
+        (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
+        let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
+        cell.configure(with: item)
+
+        return cell
+    })
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupsearchBar()
         setupCollectionView()
         setupKeyboardDismissal()
-        presenter.viewDidLoad()
+        bindViewState()
+        bindSearchBar()
+        bindScrollView()
+        bindCollectionView()
     }
 
-    private func setupsearchBar() {
-        searchBar.delegate = self
+    private func bindViewState() {
+        viewModel.viewState.asObserver()
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] viewState in
+                guard let welf = self else { return }
+                welf.configure(for: viewState)
+            }).disposed(by: disposeBag)
+    }
+
+    private func bindSearchBar() {
+        searchBar.rx.text
+            .orEmpty
+            .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: .empty)
+            .drive(viewModel.searchText)
+            .disposed(by: disposeBag)
+
+        searchBar.rx.searchButtonClicked
+            .bind(onNext: dismissKeyboard)
+            .disposed(by: disposeBag)
+    }
+
+    private func bindScrollView() {
+        collectionView.rx.contentOffset
+            .map {
+                let bottomOffset = self.collectionView.contentSize.height - self.collectionView.bounds.size.height
+                return $0.y == bottomOffset }
+            .asDriver(onErrorJustReturn: false)
+            .drive(viewModel.isScrolledToBottom)
+            .disposed(by: disposeBag)
+
+        collectionView.rx.willBeginDragging
+            .bind(onNext: dismissKeyboard)
+            .disposed(by: disposeBag)
+    }
+
+    private func bindCollectionView() {
+        viewModel.items
+            .observeOn(MainScheduler.instance)
+            .map { return [AnimatableSectionModel(model: .empty, items: $0)] }
+            .bind(to: collectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
     }
 
     private func setupCollectionView() {
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        registerCellsAndFooter()
+        setupCollectionViewLoadingFooter()
+        setupCollectionViewLayout()
+    }
+
+    private func registerCellsAndFooter() {
         collectionView.register(PhotoCell.self)
         collectionView.register(LoadingFooter.self, for: UICollectionView.elementKindSectionFooter)
+    }
+
+    private func setupCollectionViewLayout() {
+        let layoutBuilder = UICollectionViewLayoutBuilder()
+        let flowLayout = layoutBuilder.flowLayout(itemsPerRow: 3, interitemSpacing: 10, inset: 10)
+        collectionView.collectionViewLayout = flowLayout
+    }
+
+    private func setupCollectionViewLoadingFooter() {
+        dataSource.configureSupplementaryView = { dataSource, collectionView, string, indexPath in
+            guard string == UICollectionView.elementKindSectionFooter else { return UICollectionReusableView() }
+            let loadingFooter = collectionView.dequeue(LoadingFooter.self,
+                                                       at: indexPath,
+                                                       for: UICollectionView.elementKindSectionFooter)
+            self.loadingFooter = loadingFooter
+
+            return loadingFooter
+        }
     }
 
     private func setupKeyboardDismissal() {
@@ -51,18 +120,16 @@ final class SearchViewController: UIViewController {
     }
 }
 
-// MARK: - SearchPresenterOutput
+// MARK: - View state configuration
 
-extension SearchViewController: SearchPresenterOutput {
-    func configure(for state: State) {
-        DispatchQueue.main.async { [weak self] in
-            switch state {
-            case .empty: self?.configureViewForEmptyState()
-            case .noResult: self?.configureViewForNoResultState()
-            case .error(let errorMessage): self?.configureViewForErrorState(message: errorMessage)
-            case .loading(let stage): self?.configureViewForLoadingState(stage: stage)
-            case .loaded(let stage): self?.configureViewForLoadedState(stage: stage)
-            }
+extension SearchViewController {
+    private func configure(for state: State) {
+        switch state {
+        case .empty: configureViewForEmptyState()
+        case .noResult: configureViewForNoResultState()
+        case .error(let errorMessage): configureViewForErrorState(message: errorMessage)
+        case .loading(let stage): configureViewForLoadingState(stage: stage)
+        case .loaded(let stage): configureViewForLoadedState(stage: stage)
         }
     }
 
@@ -89,11 +156,9 @@ extension SearchViewController: SearchPresenterOutput {
         switch stage {
         case .initial:
             activityIndicator.isHidden = false
-            collectionView.isHidden = true
             activityIndicator.startAnimating()
         case .iterative:
             loadingFooter.startAnimating()
-
         }
     }
 
@@ -102,98 +167,10 @@ extension SearchViewController: SearchPresenterOutput {
         switch stage {
         case .initial:
             activityIndicator.isHidden = true
-            collectionView.isHidden = false
             activityIndicator.stopAnimating()
-            collectionView.reloadData()
-            collectionView.scrollToItem(at: .init(row: 0, section: 0),
-                                        at: .top, animated: false)
-        case .iterative(let indexPaths):
+            collectionView.contentOffset = CGPoint(x: 0, y: 0)
+        case .iterative:
             loadingFooter.stopAnimating()
-            collectionView.insertItems(at: indexPaths)
         }
-    }
-}
-
-// MARK: - UICollectionViewDataSource
-
-extension SearchViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
-        return presenter.cellModels.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
-        cell.configure(with: presenter.cellModels[indexPath.row])
-
-        return cell
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionFooter else { return UICollectionReusableView() }
-        let loadingFooter = collectionView.dequeue(LoadingFooter.self,
-                                                   at: indexPath,
-                                                   for: UICollectionView.elementKindSectionFooter)
-        self.loadingFooter = loadingFooter
-
-        return loadingFooter
-    }
-}
-
-// MARK: - UICollectionViewDelegate
-
-extension SearchViewController: UICollectionViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let bottomOffset = collectionView.contentSize.height - collectionView.bounds.size.height
-        if scrollView.contentOffset.y == bottomOffset { presenter.userDidScrollToBottom() }
-    }
-
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        dismissKeyboard()
-    }
-}
-
-// MARK: UICollectionViewDelegateFlowLayout
-
-extension SearchViewController: UICollectionViewDelegateFlowLayout {
-    private var itemsPerRow: Int { 3 }
-    private var interitemSpacing: CGFloat { 10 }
-    private var inset: CGFloat { 10 }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let spacing = inset * 2 + interitemSpacing * CGFloat(itemsPerRow - 1)
-        let cellWidth = Int((collectionView.bounds.width - spacing) / CGFloat(itemsPerRow))
-        return .init(width: cellWidth, height: cellWidth)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return .init(top: inset, left: inset, bottom: inset, right: inset)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return interitemSpacing
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return interitemSpacing
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return .init(width: collectionView.bounds.width, height: 50)
-    }
-}
-
-// MARK: - UISearchBarDelegate
-
-extension SearchViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        presenter.searchTextDidChange(text: searchText)
-    }
-
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        dismissKeyboard()
     }
 }

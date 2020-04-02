@@ -4,6 +4,7 @@ final class SearchCellModelsBuilder {
     typealias ImageDataProvider = ((Photo), @escaping (Result<Data, APIError>) -> Void) -> Void
 
     func photoCellModel(for photo: Photo, imageProvider: ImageDataProvider?) -> PhotoCell.Model {
+        let id = photo.id
         let imageClosure: (@escaping (UIImage) -> Void) -> Void = { closure in
             imageProvider?(photo) { (result) in
                 switch result {
@@ -19,6 +20,6 @@ final class SearchCellModelsBuilder {
             }
         }
 
-        return .init(imageClosure: imageClosure)
+        return .init(id: id, imageClosure: imageClosure)
     }
 }

@@ -9,7 +9,7 @@ extension SearchViewController {
         case loaded(LoadingStage)
 
         enum LoadingStage: Equatable {
-            case initial, iterative([IndexPath])
+            case initial, iterative
         }
     }
 }
