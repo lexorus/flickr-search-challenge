@@ -3,7 +3,8 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-typealias CollectionViewDataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, PhotoCell.Model>>
+private typealias CollectionViewSection = AnimatableSectionModel<String, PhotoCell.Model>
+private typealias CollectionViewDataSource = RxCollectionViewSectionedAnimatedDataSource<CollectionViewSection>
 
 final class SearchViewController: UIViewController {
     private weak var loadingFooter: LoadingFooter!
@@ -12,26 +13,26 @@ final class SearchViewController: UIViewController {
     @IBOutlet private weak var searchBar: UISearchBar!
     @IBOutlet private weak var collectionView: UICollectionView!
 
-    private let dataSource = RxCollectionViewSectionedAnimatedDataSource<AnimatableSectionModel<String, PhotoCell.Model>>(configureCell: { (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
+    private let viewModel = SearchViewModel()
+    private let disposeBag = DisposeBag()
+
+    private let dataSource = CollectionViewDataSource(configureCell: {
+        (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
         let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
         cell.configure(with: item)
 
         return cell
     })
 
-    private let viewModel = SearchViewModel()
-    private let disposeBag = DisposeBag()
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupCollectionView()
+        setupKeyboardDismissal()
         bindViewState()
         bindSearchBar()
         bindScrollView()
-        setupCollectionView()
-        setupCollectionViewLoadingFooter()
         bindCollectionView()
-        setupKeyboardDismissal()
     }
 
     private func bindViewState() {
@@ -71,10 +72,29 @@ final class SearchViewController: UIViewController {
             .disposed(by: disposeBag)
     }
 
+    private func bindCollectionView() {
+        viewModel.items
+            .observeOn(MainScheduler.instance)
+            .map { return [AnimatableSectionModel(model: .empty, items: $0)] }
+            .bind(to: collectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+    }
+
     private func setupCollectionView() {
-        collectionView.delegate = self
+        registerCellsAndFooter()
+        setupCollectionViewLoadingFooter()
+        setupCollectionViewLayout()
+    }
+
+    private func registerCellsAndFooter() {
         collectionView.register(PhotoCell.self)
         collectionView.register(LoadingFooter.self, for: UICollectionView.elementKindSectionFooter)
+    }
+
+    private func setupCollectionViewLayout() {
+        let layoutBuilder = UICollectionViewLayoutBuilder()
+        let flowLayout = layoutBuilder.flowLayout(itemsPerRow: 3, interitemSpacing: 10, inset: 10)
+        collectionView.collectionViewLayout = flowLayout
     }
 
     private func setupCollectionViewLoadingFooter() {
@@ -87,14 +107,6 @@ final class SearchViewController: UIViewController {
 
             return loadingFooter
         }
-    }
-
-    private func bindCollectionView() {
-        viewModel.items
-            .observeOn(MainScheduler.instance)
-            .map { return [AnimatableSectionModel(model: .empty, items: $0)] }
-            .bind(to: collectionView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
     }
 
     private func setupKeyboardDismissal() {
@@ -163,35 +175,5 @@ extension SearchViewController {
         case .iterative:
             loadingFooter.stopAnimating()
         }
-    }
-}
-
-// MARK: UICollectionViewDelegateFlowLayout
-
-extension SearchViewController: UICollectionViewDelegateFlowLayout {
-    private var itemsPerRow: Int { 3 }
-    private var interitemSpacing: CGFloat { 10 }
-    private var inset: CGFloat { 10 }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let spacing = inset * 2 + interitemSpacing * CGFloat(itemsPerRow - 1)
-        let cellWidth = Int((collectionView.bounds.width - spacing) / CGFloat(itemsPerRow))
-        return .init(width: cellWidth, height: cellWidth)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return .init(top: inset, left: inset, bottom: inset, right: inset)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return interitemSpacing
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return interitemSpacing
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return .init(width: collectionView.bounds.width, height: 50)
     }
 }
