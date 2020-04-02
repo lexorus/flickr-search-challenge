@@ -170,8 +170,7 @@ extension SearchViewController {
             activityIndicator.isHidden = true
             collectionView.isHidden = false
             activityIndicator.stopAnimating()
-            collectionView.scrollToItem(at: .init(row: 0, section: 0),
-                                        at: .top, animated: false)
+            collectionView.contentOffset = CGPoint(x: 0, y: 0)
         case .iterative:
             loadingFooter.stopAnimating()
         }
