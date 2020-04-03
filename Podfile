@@ -4,7 +4,7 @@ use_frameworks!
 target 'FlickrSearch' do
     pod 'RxSwift', '~> 5'
     pod 'RxCocoa', '~> 5'
-    pod 'RxDataSources', '4.0.0'
+    pod 'RxDataSources', '~> 4.0'
 
 	target 'FlickrSearchTests' do
 		inherit! :search_paths
