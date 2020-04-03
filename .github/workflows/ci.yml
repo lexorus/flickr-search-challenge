@@ -1,0 +1,39 @@
+name: CI
+
+# Documentation with macOS virtual environment:
+# https://github.com/actions/virtual-environments/blob/master/images/macos/macos-10.15-Readme.md
+
+on: [push, pull_request]
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
+
+jobs:
+  test:
+    name: CI
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        destination: ["name=iPhone 11"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Restore cached dependencies
+        id: cocoapods-cache
+        uses: actions/cache@v1
+        with:
+          path: Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      # Since I don't plan updating dependecies often, I didn't add "pod repo-update".
+      - name: Install dependencies
+        if: steps.cocoapods-cache.outputs.cache-hit != 'true'
+        run: pod install
+
+      - name: Test
+        run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -workspace "FlickrSearch.xcworkspace" -scheme "FlickrSearch" -destination "${{ matrix.destination }}" -enableCodeCoverage YES clean test | xcpretty

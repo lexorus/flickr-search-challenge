@@ -945,7 +945,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 455FDEA98754DFF1025D3250 /* Pods-FlickrSearchTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = FlickrSearchTests/SupportingFiles/Info.plist;
@@ -967,7 +966,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9AF182DB8DAC2A512725980F /* Pods-FlickrSearchTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = FlickrSearchTests/SupportingFiles/Info.plist;
