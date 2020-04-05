@@ -9,7 +9,7 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
 
 jobs:
-  test:
+  ci:
     name: CI
     runs-on: macos-latest
 
@@ -20,14 +20,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-
-      - name: Danger
-        if: github.event_name == 'pull_request'
-        run: |
-          brew install danger/tap/danger-swift
-          danger-swift ci --failOnErrors
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Restore cached dependencies
         id: cocoapods-cache
@@ -45,3 +37,18 @@ jobs:
 
       - name: Test
         run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -workspace "FlickrSearch.xcworkspace" -scheme "FlickrSearch" -destination "${{ matrix.destination }}" -enableCodeCoverage YES clean test | xcpretty
+
+  danger:
+    name: Danger
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Danger
+        uses: danger/swift@3.0.0
+        with:
+            args: --failOnErrors
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
