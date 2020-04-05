@@ -1,0 +1,5 @@
+ignore:
+  - "./.github"
+  - "./Pods"
+  - "./FlickrSearchTests"
+  - "./Dangerswift.swift"
