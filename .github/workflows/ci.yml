@@ -51,7 +51,7 @@ jobs:
       - name: Danger
         uses: danger/swift@3.0.0
         with:
-            args: --failOnErrors
+            args: --failOnErrors --no-publish-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
