@@ -1,0 +1,15 @@
+codecov:
+  require_ci_to_pass: false
+
+coverage:
+  range: 0..100
+  round: down
+
+comment:
+  behavior: new
+
+ignore:
+  - "./.github"
+  - "./Pods"
+  - "./FlickrSearchTests"
+  - "./Dangerswift.swift"

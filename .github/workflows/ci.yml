@@ -9,8 +9,8 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
 
 jobs:
-  ci:
-    name: CI
+  test:
+    name: Test and codecov upload
     runs-on: macos-latest
 
     strategy:
@@ -37,6 +37,12 @@ jobs:
 
       - name: Test
         run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -workspace "FlickrSearch.xcworkspace" -scheme "FlickrSearch" -destination "${{ matrix.destination }}" -enableCodeCoverage YES clean test | xcpretty
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          name: flickr-search
+          fail_ci_if_error: true
 
 
   danger:
