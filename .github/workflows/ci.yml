@@ -21,6 +21,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
+      - name: Danger
+        if: github.event_name == 'pull_request'
+        run: |
+          brew install danger/tap/danger-swift
+          danger-swift ci --failOnErrors
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Restore cached dependencies
         id: cocoapods-cache
         uses: actions/cache@v1
