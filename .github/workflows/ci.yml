@@ -9,8 +9,8 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
 
 jobs:
-  ci:
-    name: CI
+  test:
+    name: Test and codecov upload
     runs-on: macos-latest
 
     strategy:
