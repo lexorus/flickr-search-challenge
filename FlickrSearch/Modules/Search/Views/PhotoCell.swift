@@ -17,7 +17,7 @@ final class PhotoCell: UICollectionViewCell, IdentifiableType {
 
         resetImage()
     }
-    
+
     func configure(with model: Model) {
         model.imageClosure { image in
             DispatchQueue.main.async { [weak self] in

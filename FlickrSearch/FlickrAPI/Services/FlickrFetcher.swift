@@ -22,7 +22,8 @@ final class FlickrFetcher: FlickrFetcherType {
     }
 
     @discardableResult
-    func perform<T: Decodable>(_ request: FlickrRequest, callback: @escaping (Result<T, APIError>) -> Void) -> Cancellable {
+    func perform<T: Decodable>(_ request: FlickrRequest,
+                               callback: @escaping (Result<T, APIError>) -> Void) -> Cancellable {
         guard let urlRequest = requestBuilder.urlRequest(from: request) else {
             callback(.failure(.failedToBuildURLRequest))
             return EmptyCancellable()

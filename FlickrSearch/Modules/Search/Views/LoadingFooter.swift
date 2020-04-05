@@ -7,7 +7,7 @@ final class LoadingFooter: UICollectionReusableView, IdentifiableType {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         stopAnimating()
     }
 

@@ -54,7 +54,6 @@ final class PaginatorTests: XCTestCase {
         // WHEN
         let paginator = Paginator(pageSize: pageSize, totalNumberOfPages: 10)
 
-
         // THEN
         XCTAssertEqual(paginator.nextPage, 2)
     }
@@ -65,7 +64,6 @@ final class PaginatorTests: XCTestCase {
 
         // WHEN
         let paginator = Paginator(pageSize: pageSize, totalNumberOfPages: 1)
-
 
         // THEN
         XCTAssertEqual(paginator.nextPage, nil)

@@ -20,7 +20,9 @@ final class SearchedPhotoFetcher: XCTestCase {
         super.tearDown()
     }
 
-    func prepareSearchedPhotosFetcher(text: String = "text", photosPage: PhotosPage = .mocked(), callback: @escaping ResultCallback = { _ in }) {
+    func prepareSearchedPhotosFetcher(text: String = "text",
+                                      photosPage: PhotosPage = .mocked(),
+                                      callback: @escaping ResultCallback = { _ in }) {
         searchedPhotosFetcher.loadFirstPage(for: text, callback: callback)
         mockFetcher.getPhotosFuncCheck.arguments?.3(.success(photosPage))
     }
@@ -104,7 +106,7 @@ final class SearchedPhotoFetcher: XCTestCase {
         XCTAssertEqual(callbackResult, .empty)
     }
 
-    func test_whenLoadFirstPageIsCalled_whenGetPhotosSucceeds_whenPhotosAreNotEmpty_thenCallbackIsCalledWithPhotosResult() {
+    func test_whenLoadFirstPage_whenGetPhotosSucceeds_whenPhotosAreNotEmpty_thenCallbackIsCalledWithPhotosResult() {
         // GIVEN
         let text = "search text"
         var callbackResult: SearchedPhotosFetcher.Result?
@@ -203,7 +205,7 @@ final class SearchedPhotoFetcher: XCTestCase {
         XCTAssertEqual(callbackResult, .empty)
     }
 
-    func test_whenLoadNextPageIsCalled_whenGetPhotosSucceeds_whenPhotosAreNotEmpty_thenCallbackIsCalledWithEmptyResult() {
+    func test_whenLoadNextPage_whenGetPhotosSucceeds_whenPhotosAreNotEmpty_thenCallbackIsCalledWithEmptyResult() {
         // GIVEN
         var callbackResult: SearchedPhotosFetcher.Result?
         let callback: (SearchedPhotosFetcher.Result) -> Void = {
