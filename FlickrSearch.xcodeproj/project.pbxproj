@@ -520,6 +520,7 @@
 				653EC6D1238138D5007F1404 /* Frameworks */,
 				653EC6D2238138D5007F1404 /* Resources */,
 				37EEC2CC22FD2846072C496B /* [CP] Embed Pods Frameworks */,
+				B15B2E49243A0AA600E5552A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -668,6 +669,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FlickrSearch/Pods-FlickrSearch-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		B15B2E49243A0AA600E5552A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nswiftlint lint\n";
 		};
 		E21168B4518D81FFD010AA10 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

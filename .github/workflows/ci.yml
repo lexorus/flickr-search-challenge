@@ -39,17 +39,22 @@ jobs:
         run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -workspace "FlickrSearch.xcworkspace" -scheme "FlickrSearch" -destination "${{ matrix.destination }}" -enableCodeCoverage YES clean test | xcpretty
 
   danger:
-    name: Danger
+    name: Danger and Swiftlint
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
 
     steps:
       - name: Checkout
         uses: actions/checkout@v1
 
       - name: Danger
+        if: github.event_name == 'pull_request'
         uses: danger/swift@3.0.0
         with:
             args: --failOnErrors
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Swiftlint
+        uses: norio-nomura/action-swiftlint@3.1.0
+        env:
+          DIFF_BASE: ${{ github.base_ref }}

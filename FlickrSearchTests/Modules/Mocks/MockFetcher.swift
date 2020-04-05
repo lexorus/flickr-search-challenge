@@ -11,7 +11,10 @@ final class MockFetcher: FetcherType {
     var getPhotosCancellableStub: MockCancellable = MockCancellable()
     var getPhotosFuncCheck = FuncCheck<(String, UInt, UInt, (Result<PhotosPage, APIError>) -> Void)>()
     @discardableResult
-    func getPhotos(for query: String, pageNumber: UInt, pageSize: UInt, callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
+    func getPhotos(for query: String,
+                   pageNumber: UInt,
+                   pageSize: UInt,
+                   callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
         getPhotosFuncCheck.call((query, pageNumber, pageSize, callback))
 
         return getPhotosCancellableStub

@@ -16,8 +16,7 @@ final class SearchViewController: UIViewController {
     private let viewModel = SearchViewModel()
     private let disposeBag = DisposeBag()
 
-    private let dataSource = CollectionViewDataSource(configureCell: {
-        (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
+    private let dataSource = CollectionViewDataSource(configureCell: { (_, collectionView, indexPath, item) in
         let cell = collectionView.dequeue(PhotoCell.self, for: indexPath)
         cell.configure(with: item)
 

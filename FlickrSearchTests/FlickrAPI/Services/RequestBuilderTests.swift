@@ -15,6 +15,7 @@ class RequestBuilderTests: XCTestCase {
         let urlRequest = requestBuilder.urlRequest(from: flickrRequest)
 
         // THEN
+        // swiftlint:disable:next line_length
         let expectedURLString = "https://api.flickr.com/services/rest/?api_key=some_api_key&format=json&nojsoncallback=1&safe_search=1&per_page=2&page=1&method=flickr.photos.search&text=query"
         XCTAssertEqual(urlRequest?.url?.absoluteString, expectedURLString)
         XCTAssertEqual(urlRequest?.httpMethod, HTTPMethod.get.rawValue)

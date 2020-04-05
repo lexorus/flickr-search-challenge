@@ -5,7 +5,7 @@ class FlickrResponseTests: XCTestCase {
     func test_whenDecodingSuccessfulSearchPhotosRepsonse_thenDecodingSucceeds() {
         // GIVEN
         let successfulData = Data(testBundleFileName: "FlickrSearchPhotosSuccessResponse")
-        
+
         // WHEN
         let decodedModel = try? JSONDecoder().decode(FlickrResponse<Photos>.self, from: successfulData!)
 
@@ -39,7 +39,8 @@ class FlickrResponseTests: XCTestCase {
         // THEN
         let expectedError = FlickrError(code: 112,
                                         message: "Method \"flickr.photos.searchr\" not found")
-        let expectedResponse = FlickrResponse(result: Result<Photos, FlickrError>.failure(expectedError), status: .failure)
+        let expectedResponse = FlickrResponse(result: Result<Photos, FlickrError>.failure(expectedError),
+                                              status: .failure)
         XCTAssertEqual(decodedModel, expectedResponse)
     }
 }
