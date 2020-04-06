@@ -18,7 +18,7 @@ target 'PhotosAPI' do
 	pod 'MicroNetwork', :git => 'https://github.com/lexorus/MicroNetwork.git', :branch => 'feature/expose-framework-through-cocoapods'
 
 	target 'PhotosAPITests' do
-		inherit! :search_paths
+		# inherit! :search_paths
 
 		pod 'MicroNetworkMocks', :git => 'https://github.com/lexorus/MicroNetwork.git', :branch => 'feature/expose-framework-through-cocoapods'
 	end
