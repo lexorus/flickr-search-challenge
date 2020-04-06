@@ -1,4 +1,5 @@
 import Foundation
+import PhotosAPI
 
 protocol FetcherType {
     @discardableResult
@@ -12,13 +13,13 @@ protocol FetcherType {
 }
 
 final class Fetcher: FetcherType {
-    private let flickrFetcher: FlickrFetcherType
+    private let flickrFetcher: PhotosAPI
     private let imageCacher: ImageCacherType
 
     init(apiKey: String,
-         flickrFetcher: FlickrFetcherType? = nil,
+         flickrFetcher: PhotosAPI? = nil,
          imageCacher: ImageCacherType = ImageCacher()) {
-        self.flickrFetcher = flickrFetcher ?? FlickrFetcher(apiKey: apiKey)
+        self.flickrFetcher = flickrFetcher ?? FlickrFetcher(key: apiKey)
         self.imageCacher = imageCacher
     }
 
@@ -27,16 +28,7 @@ final class Fetcher: FetcherType {
                    pageNumber: UInt,
                    pageSize: UInt,
                    callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
-        let searchRequest = SearchPhotosRequest(query: query, page: pageNumber, pageSize: pageSize)
-        return flickrFetcher.perform(searchRequest) { (flickrResult: Result<FlickrResponse<Photos>, APIError>) in
-            let result = flickrResult.flatMap { (flickrResponse) -> Result<PhotosPage, APIError> in
-                switch flickrResponse.result {
-                case .success(let photots): return .success(photots.photos)
-                case .failure(let error): return .failure(.flickAPIError(error))
-                }
-            }
-            callback(result)
-        }
+        return flickrFetcher.getPhotos(query: query, pageNumber: pageNumber, pageSize: pageSize, callback: callback)
     }
 
     func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {
@@ -45,8 +37,7 @@ final class Fetcher: FetcherType {
                 callback(.success(data))
                 return
             }
-            let urlString = PhotoStringURLBuilder().urlString(for: photo)
-            self?.flickrFetcher.getData(from: urlString) { [weak self] result in
+            self?.flickrFetcher.getImageData(for: photo) { [weak self] result in
                 callback(result)
                 guard let data = try? result.get() else { return }
                 self?.imageCacher.set(imageData: data, for: photo.id)

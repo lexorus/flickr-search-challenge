@@ -1,20 +1,20 @@
 import Foundation
 
-enum APIError: Swift.Error, Equatable {
+public enum APIError: Swift.Error, Equatable {
     case failedToBuildURLRequest
     case apiError(Swift.Error?)
-    case flickAPIError(FlickrError)
+    case describedError(String)
     case noDataError
     case decodingError(Swift.Error?)
 
-    static func == (lhs: APIError, rhs: APIError) -> Bool {
+    public static func == (lhs: APIError, rhs: APIError) -> Bool {
         switch (lhs, rhs) {
         case (.failedToBuildURLRequest, .failedToBuildURLRequest),
              (.apiError, .apiError),
              (.noDataError, .noDataError),
              (.decodingError, .decodingError):
             return true
-        case (.flickAPIError(let lhsError), .flickAPIError(let rhsError)):
+        case (.describedError(let lhsError), .describedError(let rhsError)):
             return lhsError == rhsError
         default:
             return false
@@ -24,14 +24,14 @@ enum APIError: Swift.Error, Equatable {
 
 extension APIError: CustomStringConvertible {
     private var genericError: String { "Something went wrong" }
-    var description: String {
+    public var description: String {
         switch self {
         case .failedToBuildURLRequest:
             return "Failed to build request."
         case .apiError(let error):
             return (error as NSError?)?.localizedDescription ?? genericError
-        case .flickAPIError(let error):
-            return error.message
+        case .describedError(let error):
+            return error
         case .noDataError:
             return "No data received from the server."
         case .decodingError:

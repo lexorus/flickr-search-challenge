@@ -1,4 +1,5 @@
 import Foundation
+import PhotosAPI
 
 protocol SearchedPhotosFetcherType: class {
     init(fetcher: FetcherType)

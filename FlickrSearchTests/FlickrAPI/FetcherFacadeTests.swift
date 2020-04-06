@@ -1,8 +1,9 @@
 import XCTest
+import PhotosAPI
 @testable import FlickrSearch
 
 final class FetcherFacadeTests: XCTestCase {
-    var mockFlickrFetcher: MockFlickrFetcher<String>!
+    var mockFlickrFetcher: MockFlickrFetcher<PhotosPage>!
     var mockImageCacher: MockImageCacher!
     var fetcher: Fetcher!
 
@@ -35,7 +36,7 @@ final class FetcherFacadeTests: XCTestCase {
         mockImageCacher.getImageDataFuncCheck.arguments?.1(nil)
 
         // THEN
-        XCTAssertTrue(mockFlickrFetcher.getDataFuncCheck.wasCalled)
+        XCTAssertTrue(mockFlickrFetcher.getImageDataFuncCheck.wasCalled)
     }
 
     func test_whenRequestingImageData_whenThereIsNoCachedData_whenReqeustIsMade_thenTheResultShouldBeCached() {
@@ -48,7 +49,7 @@ final class FetcherFacadeTests: XCTestCase {
         // WHEN
         fetcher.getImageData(for: photo) { _ in }
         mockImageCacher.getImageDataFuncCheck.arguments?.1(nil)
-        mockFlickrFetcher.getDataFuncCheck.arguments?.1(.success(sampleData))
+        mockFlickrFetcher.getImageDataFuncCheck.arguments?.1(.success(sampleData))
 
         // THEN
         XCTAssertEqual(mockImageCacher.setImageDataFuncCheck.arguments?.0, sampleData)
@@ -70,7 +71,7 @@ final class FetcherFacadeTests: XCTestCase {
         // THEN
         let expectedResult = Result<Data, APIError>.success(cachedData)
         XCTAssertEqual(result, expectedResult)
-        XCTAssertFalse(mockFlickrFetcher.getDataFuncCheck.wasCalled)
+        XCTAssertFalse(mockFlickrFetcher.getImageDataFuncCheck.wasCalled)
     }
 
 }

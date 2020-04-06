@@ -1,19 +1,21 @@
 import Foundation
-@testable import FlickrSearch
+@testable import PhotosAPI
 
-final class MockFlickrFetcher<M: Decodable>: FlickrFetcherType {
-    var performCancellableStub = MockCancellable()
-    var performFuncCheck = FuncCheck<(FlickrRequest, (Result<M, APIError>) -> Void)>()
-    func perform<T: Decodable>(_ request: FlickrRequest,
-                               callback: @escaping (Result<T, APIError>) -> Void) -> Cancellable {
-        // swiftlint:disable:next force_cast
-        performFuncCheck.call((request, callback as! (Result<M, APIError>) -> Void))
+final class MockFlickrFetcher<M: Decodable> {
+    var getPhotosStub = MockCancellable()
+    var getPhotosFuncCheck = FuncCheck<(String, UInt, UInt, (Result<M, APIError>) -> Void)>()
 
-        return performCancellableStub
+    var getImageDataFuncCheck = FuncCheck<(Photo, (Result<Data, APIError>) -> Void)>()
+}
+
+extension MockFlickrFetcher: PhotosAPI where M == PhotosPage {
+    func getPhotos(query: String, pageNumber: UInt, pageSize: UInt, callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
+        getPhotosFuncCheck.call((query, pageNumber, pageSize, callback))
+
+        return getPhotosStub
     }
 
-    var getDataFuncCheck = FuncCheck<(String, (Result<Data, APIError>) -> Void)>()
-    func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) {
-        getDataFuncCheck.call((stringURL, callback))
+    func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {
+        getImageDataFuncCheck.call((photo, callback))
     }
 }

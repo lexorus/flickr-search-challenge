@@ -1,7 +1,7 @@
 import Foundation
 
-protocol PhotosAPI {
-    func getPhotos(for query: String,
+public protocol PhotosAPI {
+    func getPhotos(query: String,
                    pageNumber: UInt,
                    pageSize: UInt,
                    callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable
@@ -10,10 +10,14 @@ protocol PhotosAPI {
                       callback: @escaping (Result<Data, APIError>) -> Void)
 }
 
-final class FlickrFetcher: PhotosAPI {
+public final class FlickrFetcher: PhotosAPI {
     private let requestBuilder: RequestBuilderType
     private let urlSession: URLSessionType
     private let decoder = JSONDecoder()
+
+    public convenience init(key: String) {
+        self.init(apiKey: key)
+    }
 
     init(apiKey: String,
          urlSession: URLSessionType = URLSession.shared,
@@ -22,12 +26,20 @@ final class FlickrFetcher: PhotosAPI {
         self.urlSession = urlSession
     }
 
-    func getPhotos(for query: String, pageNumber: UInt, pageSize: UInt, callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
+    public func getPhotos(query: String, pageNumber: UInt, pageSize: UInt, callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
         let searchRequest = SearchPhotosRequest(query: query, page: pageNumber, pageSize: pageSize)
-        return perform(searchRequest, callback: callback)
+        return perform(searchRequest) { (flickrResult: Result<FlickrResponse<Photos>, APIError>) in
+            let result = flickrResult.flatMap { (flickrResponse) -> Result<PhotosPage, APIError> in
+                switch flickrResponse.result {
+                case .success(let photos): return .success(photos.photos)
+                case .failure(let error): return .failure(.describedError(error.message))
+                }
+            }
+            callback(result)
+        }
     }
 
-    func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {
+    public func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {
         let urlString = PhotoStringURLBuilder().urlString(for: photo)
         return getData(from: urlString, callback: callback)
     }

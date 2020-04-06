@@ -37,6 +37,13 @@
             BlueprintName = "FlickrSearch"
             ReferencedContainer = "container:FlickrSearch.xcodeproj">
          </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B1A5CE19243B1BEA0004F3F7"
+            BuildableName = "PhotosAPI.framework"
+            BlueprintName = "PhotosAPI"
+            ReferencedContainer = "container:FlickrSearch.xcodeproj">
+         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference
