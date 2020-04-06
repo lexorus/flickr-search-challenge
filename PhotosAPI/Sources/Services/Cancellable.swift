@@ -1,7 +1,20 @@
 import Foundation
+import MicroNetwork
 
 public protocol Cancellable: class {
     func cancel()
+}
+
+final class CancellableTask: Cancellable {
+    private let task: NetworkTask
+
+    init(task: NetworkTask) {
+        self.task = task
+    }
+
+    func cancel() {
+        task.cancel()
+    }
 }
 
 final class EmptyCancellable: Cancellable {
@@ -10,4 +23,8 @@ final class EmptyCancellable: Cancellable {
     }
 }
 
-extension URLSessionDataTask: Cancellable {}
+extension NetworkTask {
+    func toCancellable() -> Cancellable {
+        return CancellableTask(task: self)
+    }
+}

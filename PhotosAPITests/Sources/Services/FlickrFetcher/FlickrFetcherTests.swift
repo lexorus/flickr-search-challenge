@@ -1,28 +1,29 @@
 import XCTest
+import MicroNetworkMocks
 @testable import PhotosAPI
 
 class FlickrFetcherTests: XCTestCase {
     typealias SampleResult = Result<String, APIError>
 
     let sampleAPIKey = "sample_api_key"
-    var requestBuilder: MockRequestBuilder!
-    var urlSession: MockURLSession!
+    var mockRequestBuilder: MockRequestBuilder!
+    var mockNetwork: MockNetwork!
     var fetcher: FlickrFetcher!
 
     override func setUp() {
         super.setUp()
 
-        requestBuilder = MockRequestBuilder(apiKey: sampleAPIKey)
-        urlSession = MockURLSession()
+        mockRequestBuilder = MockRequestBuilder(apiKey: sampleAPIKey)
+        mockNetwork = MockNetwork()
         fetcher = FlickrFetcher(apiKey: sampleAPIKey,
-                                urlSession: urlSession,
-                                requestBuilder: { _ in requestBuilder })
+                                urlSession: mockNetwork,
+                                requestBuilder: { _ in mockRequestBuilder })
     }
 
     override func tearDown() {
         fetcher = nil
-        urlSession = nil
-        requestBuilder = nil
+        mockNetwork = nil
+        mockRequestBuilder = nil
 
         super.tearDown()
     }
@@ -31,7 +32,7 @@ class FlickrFetcherTests: XCTestCase {
 
     func test_whenBuilderFailsToBuildRequest_thenCallbackIsCalledWithRequestBuildError() {
         // GIVEN
-        requestBuilder.urlRequestStub = nil
+        mockRequestBuilder.urlRequestStub = nil
         var resultToTest: SampleResult?
 
         // WHEN
@@ -44,72 +45,20 @@ class FlickrFetcherTests: XCTestCase {
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
-    func test_whenResponseStatusCodeIsNotSuccessful_thenTheCallbackShouldBeCalledWithAPIError() {
-        // GIVEN
-        let mockHTTPURLResponse = HTTPURLResponse.mocked(statusCode: 400)
-        var resultToTest: SampleResult?
-        requestBuilder.urlRequestStub = .mocked()
-
-        // WHEN
-        fetcher.perform(SearchPhotosRequest.mocked()) { (result: SampleResult) in
-            resultToTest = result
-        }
-        urlSession.performFuncCheck.arguments?.1(nil, mockHTTPURLResponse, nil)
-
-        // THEN
-        let expectedResult = SampleResult.failure(.apiError(nil))
-        XCTAssertEqual(resultToTest, expectedResult)
-    }
-
-    func test_whenThereIsNoDataInResponse_thenTheCallbackShouldBeCalledWithNoDataError() {
-        // GIVEN
-        let mockHTTPURLResponse = HTTPURLResponse.mocked()
-        var resultToTest: SampleResult?
-        requestBuilder.urlRequestStub = .mocked()
-
-        // WHEN
-        fetcher.perform(SearchPhotosRequest.mocked()) { (result: SampleResult) in
-            resultToTest = result
-        }
-        urlSession.performFuncCheck.arguments?.1(nil, mockHTTPURLResponse, nil)
-
-        // THEN
-        let expectedResult = SampleResult.failure(.noDataError)
-        XCTAssertEqual(resultToTest, expectedResult)
-    }
-
-    func test_whenResponseDataCannotBeDecoded_thenTheCallbackShouldBeCalledWithDecodingError() {
-        // GIVEN
-        let mockHTTPURLResponse = HTTPURLResponse.mocked()
-        var resultToTest: SampleResult?
-        requestBuilder.urlRequestStub = .mocked()
-
-        // WHEN
-        fetcher.perform(SearchPhotosRequest.mocked()) { (result: SampleResult) in
-            resultToTest = result
-        }
-        urlSession.performFuncCheck.arguments?.1(Data(), mockHTTPURLResponse, nil)
-
-        // THEN
-        let expectedResult = SampleResult.failure(.decodingError(nil))
-        XCTAssertEqual(resultToTest, expectedResult)
-    }
-
     func test_whenThereIsSuccessfulResponseWithValidData_thenItShouldBeDecodedAndReturnedInCallback() {
         // GIVEN
-        let mockHTTPURLResponse = HTTPURLResponse.mocked()
         var resultToTest: Result<[String], APIError>?
-        requestBuilder.urlRequestStub = .mocked()
+        mockRequestBuilder.urlRequestStub = .mocked()
         let sampleString = "some_value"
         let sampleJson = "[ \"\(sampleString)\" ]"
-        let sampleData = sampleJson.data(using: .utf8)
+        let sampleData = sampleJson.data(using: .utf8)!
 
         // WHEN
         fetcher.perform(SearchPhotosRequest.mocked()) { (result: Result<[String], APIError>) in
             resultToTest = result
         }
-        urlSession.performFuncCheck.arguments?.1(sampleData, mockHTTPURLResponse, nil)
-
+        mockNetwork.dataTaskCompletion?(.success(sampleData))
+        
         // THEN
         let expectedResult = Result<[String], APIError>.success([sampleString])
         XCTAssertEqual(resultToTest, expectedResult)
@@ -140,7 +89,7 @@ class FlickrFetcherTests: XCTestCase {
         fetcher.getData(from: "sample_url.com") {
             resultToTest = $0
         }
-        urlSession.performFuncCheck.arguments?.1(sampleData, HTTPURLResponse.mocked(), nil)
+        mockNetwork.dataTaskCompletion?(.success(sampleData))
 
         // THEN
         let expectedResult = Result<Data, APIError>.success(sampleData)

@@ -1,4 +1,5 @@
 import Foundation
+import MicroNetwork
 
 public protocol PhotosAPI {
     func getPhotos(query: String,
@@ -12,7 +13,7 @@ public protocol PhotosAPI {
 
 public final class FlickrFetcher: PhotosAPI {
     private let requestBuilder: RequestBuilderType
-    private let urlSession: URLSessionType
+    private let network: Network
     private let decoder = JSONDecoder()
 
     public convenience init(key: String) {
@@ -20,10 +21,10 @@ public final class FlickrFetcher: PhotosAPI {
     }
 
     init(apiKey: String,
-         urlSession: URLSessionType = URLSession.shared,
+         urlSession: Network = URLSession.shared,
          requestBuilder: (String) -> RequestBuilderType = RequestBuilder.init) {
         self.requestBuilder = requestBuilder(apiKey)
-        self.urlSession = urlSession
+        self.network = urlSession
     }
 
     public func getPhotos(query: String, pageNumber: UInt, pageSize: UInt, callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
@@ -74,18 +75,19 @@ public final class FlickrFetcher: PhotosAPI {
 
     @discardableResult
     private func perform(_ request: URLRequest, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
-        return urlSession.perform(request) { (data, response, error) in
-            if (error as NSError?)?.code == NSURLErrorCancelled { return }
-            guard let response = response as? HTTPURLResponse,
-                (200..<300) ~= response.statusCode else {
-                    callback(.failure(.apiError(error)))
-                    return
-            }
-            guard let data = data else {
-                callback(.failure(.noDataError))
-                return
-            }
-            callback(.success(data))
+        return network.dataTask(with: request) { result in
+            callback(result.mapError { $0.toAPIError() })
+        }.toCancellable()
+    }
+}
+
+extension NetworkError {
+    func toAPIError() -> APIError {
+        switch self {
+        case .apiError(_, let error):
+            return .apiError(error)
+        case .noDataError:
+            return .noDataError
         }
     }
 }
