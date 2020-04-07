@@ -11,5 +11,7 @@ comment:
 ignore:
   - "./.github"
   - "./Pods"
+  - "./PhotosAPIMocks"
   - "./FlickrSearchTests"
+  - "./PhotosAPITests"
   - "./Dangerswift.swift"
