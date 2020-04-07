@@ -58,7 +58,7 @@ class FlickrFetcherTests: XCTestCase {
             resultToTest = result
         }
         mockNetwork.dataTaskCompletion?(.success(sampleData))
-        
+
         // THEN
         let expectedResult = Result<[String], APIError>.success([sampleString])
         XCTAssertEqual(resultToTest, expectedResult)

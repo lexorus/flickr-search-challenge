@@ -27,7 +27,10 @@ public final class FlickrFetcher: PhotosAPI {
         self.network = urlSession
     }
 
-    public func getPhotos(query: String, pageNumber: UInt, pageSize: UInt, callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
+    public func getPhotos(query: String,
+                          pageNumber: UInt,
+                          pageSize: UInt,
+                          callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
         let searchRequest = SearchPhotosRequest(query: query, page: pageNumber, pageSize: pageSize)
         return perform(searchRequest) { (flickrResult: Result<FlickrResponse<Photos>, APIError>) in
             let result = flickrResult.flatMap { (flickrResponse) -> Result<PhotosPage, APIError> in
