@@ -1,9 +1,8 @@
 import Foundation
-import PhotosAPI
-@testable import FlickrSearch
+@testable import PhotosAPI
 
 extension Photo {
-    static func mocked(id: String = "id",
+    public static func mocked(id: String = "id",
                        title: String = "title",
                        secret: String = "secret",
                        server: String = "server",

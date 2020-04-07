@@ -66,6 +66,16 @@
                ReferencedContainer = "container:FlickrSearch.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B11DDEE8243C729800C52E32"
+               BuildableName = "PhotosAPIMocksTests.xctest"
+               BlueprintName = "PhotosAPIMocksTests"
+               ReferencedContainer = "container:FlickrSearch.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

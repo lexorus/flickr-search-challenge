@@ -1,4 +1,5 @@
 import Foundation
+import PhotosAPIMocks
 @testable import PhotosAPI
 
 final class MockRequestBuilder: RequestBuilderType {

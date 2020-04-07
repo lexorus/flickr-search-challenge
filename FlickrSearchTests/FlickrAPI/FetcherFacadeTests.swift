@@ -1,16 +1,17 @@
 import XCTest
 import PhotosAPI
+import PhotosAPIMocks
 @testable import FlickrSearch
 
 final class FetcherFacadeTests: XCTestCase {
-    var mockFlickrFetcher: MockFlickrFetcher<PhotosPage>!
+    var mockFlickrFetcher: MockPhotosAPI!
     var mockImageCacher: MockImageCacher!
     var fetcher: Fetcher!
 
     override func setUp() {
         super.setUp()
 
-        mockFlickrFetcher = MockFlickrFetcher()
+        mockFlickrFetcher = MockPhotosAPI()
         mockImageCacher = MockImageCacher()
         fetcher = Fetcher(apiKey: "key",
                           flickrFetcher: mockFlickrFetcher,

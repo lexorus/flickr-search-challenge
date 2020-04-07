@@ -2,7 +2,7 @@ import Foundation
 @testable import PhotosAPI
 
 extension PhotosPage {
-    static func mocked(pageNumber: UInt = 1,
+    public static func mocked(pageNumber: UInt = 1,
                        totalNumberOfPages: UInt = 2,
                        itemsPerPage: UInt = 2,
                        totalItems: String = "4",

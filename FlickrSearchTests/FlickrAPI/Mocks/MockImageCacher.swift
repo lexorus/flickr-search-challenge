@@ -1,4 +1,5 @@
 import Foundation
+import PhotosAPIMocks
 @testable import FlickrSearch
 
 final class MockImageCacher: ImageCacherType {
