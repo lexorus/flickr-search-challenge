@@ -11,10 +11,10 @@ public final class FlickrPhotosAPI: PhotosAPI {
     }
 
     init(apiKey: String,
-         urlSession: Network = URLSession.shared,
+         network: Network = URLSession.shared,
          requestBuilder: (String) -> RequestBuilderType = RequestBuilder.init) {
         self.requestBuilder = requestBuilder(apiKey)
-        self.network = urlSession
+        self.network = network
     }
 
     public func getPhotos(query: String,
@@ -39,7 +39,7 @@ public final class FlickrPhotosAPI: PhotosAPI {
     }
 
     @discardableResult
-    func perform<T: Decodable>(_ request: FlickrRequest,
+    private func perform<T: Decodable>(_ request: FlickrRequest,
                                callback: @escaping (Result<T, APIError>) -> Void) -> Cancellable {
         guard let urlRequest = requestBuilder.urlRequest(from: request) else {
             callback(.failure(.failedToBuildURLRequest))
@@ -58,7 +58,7 @@ public final class FlickrPhotosAPI: PhotosAPI {
         }
     }
 
-    func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) {
+    private func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) {
         guard let url = URL(string: stringURL) else {
             callback(.failure(.failedToBuildURLRequest))
             return

@@ -65,7 +65,7 @@
 		B1A5CE6A243B29660004F3F7 /* FlickrSearchPhotosSuccessResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = B1A5CE5C243B29660004F3F7 /* FlickrSearchPhotosSuccessResponse.json */; };
 		B1A5CE6B243B29660004F3F7 /* FlickrSearchPhotosFailureResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = B1A5CE5D243B29660004F3F7 /* FlickrSearchPhotosFailureResponse.json */; };
 		B1A5CE6E243B29660004F3F7 /* MockRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE62243B29660004F3F7 /* MockRequestBuilder.swift */; };
-		B1A5CE70243B29660004F3F7 /* FlickrFetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE64243B29660004F3F7 /* FlickrFetcherTests.swift */; };
+		B1A5CE70243B29660004F3F7 /* FlickrPhotosAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE64243B29660004F3F7 /* FlickrPhotosAPITests.swift */; };
 		B1A5CE71243B29660004F3F7 /* PhotoRequestBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE65243B29660004F3F7 /* PhotoRequestBuilderTests.swift */; };
 		B1A5CE72243B29660004F3F7 /* RequestBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE66243B29660004F3F7 /* RequestBuilderTests.swift */; };
 		B1A5CE7A243B29E30004F3F7 /* MockURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE74243B29E20004F3F7 /* MockURL.swift */; };
@@ -228,7 +228,7 @@
 		B1A5CE5C243B29660004F3F7 /* FlickrSearchPhotosSuccessResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = FlickrSearchPhotosSuccessResponse.json; sourceTree = "<group>"; };
 		B1A5CE5D243B29660004F3F7 /* FlickrSearchPhotosFailureResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = FlickrSearchPhotosFailureResponse.json; sourceTree = "<group>"; };
 		B1A5CE62243B29660004F3F7 /* MockRequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockRequestBuilder.swift; sourceTree = "<group>"; };
-		B1A5CE64243B29660004F3F7 /* FlickrFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrFetcherTests.swift; sourceTree = "<group>"; };
+		B1A5CE64243B29660004F3F7 /* FlickrPhotosAPITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrPhotosAPITests.swift; sourceTree = "<group>"; };
 		B1A5CE65243B29660004F3F7 /* PhotoRequestBuilderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoRequestBuilderTests.swift; sourceTree = "<group>"; };
 		B1A5CE66243B29660004F3F7 /* RequestBuilderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilderTests.swift; sourceTree = "<group>"; };
 		B1A5CE74243B29E20004F3F7 /* MockURL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockURL.swift; sourceTree = "<group>"; };
@@ -674,6 +674,7 @@
 		B1A5CE56243B29330004F3F7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				B1A5CE64243B29660004F3F7 /* FlickrPhotosAPITests.swift */,
 				B1A5CE7F243B2A620004F3F7 /* Helpers */,
 				B1A5CE5F243B29660004F3F7 /* Services */,
 				B1A5CE57243B29660004F3F7 /* Mocks */,
@@ -717,7 +718,6 @@
 			isa = PBXGroup;
 			children = (
 				B1A5CE62243B29660004F3F7 /* MockRequestBuilder.swift */,
-				B1A5CE64243B29660004F3F7 /* FlickrFetcherTests.swift */,
 			);
 			path = FlickrFetcher;
 			sourceTree = "<group>";
@@ -1194,7 +1194,7 @@
 				B1A5CE7E243B29E30004F3F7 /* MockHTTPURLResponse.swift in Sources */,
 				B1A5CE69243B29660004F3F7 /* FlickrResponseTests.swift in Sources */,
 				B1A5CE7B243B29E30004F3F7 /* MockURLRequest.swift in Sources */,
-				B1A5CE70243B29660004F3F7 /* FlickrFetcherTests.swift in Sources */,
+				B1A5CE70243B29660004F3F7 /* FlickrPhotosAPITests.swift in Sources */,
 				B1A5CE6E243B29660004F3F7 /* MockRequestBuilder.swift in Sources */,
 				B1A5CE83243B2A620004F3F7 /* DataExtensions.swift in Sources */,
 				B1A5CE72243B29660004F3F7 /* RequestBuilderTests.swift in Sources */,

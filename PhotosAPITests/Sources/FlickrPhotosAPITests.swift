@@ -2,7 +2,7 @@ import XCTest
 import MicroNetworkMocks
 @testable import PhotosAPI
 
-class FlickrFetcherTests: XCTestCase {
+final class FlickrPhotosAPITests: XCTestCase {
     typealias SampleResult = Result<String, APIError>
 
     let sampleAPIKey = "sample_api_key"
@@ -16,7 +16,7 @@ class FlickrFetcherTests: XCTestCase {
         mockRequestBuilder = MockRequestBuilder(apiKey: sampleAPIKey)
         mockNetwork = MockNetwork()
         fetcher = FlickrPhotosAPI(apiKey: sampleAPIKey,
-                                urlSession: mockNetwork,
+                                network: mockNetwork,
                                 requestBuilder: { _ in mockRequestBuilder })
     }
 
@@ -33,34 +33,36 @@ class FlickrFetcherTests: XCTestCase {
     func test_whenBuilderFailsToBuildRequest_thenCallbackIsCalledWithRequestBuildError() {
         // GIVEN
         mockRequestBuilder.urlRequestStub = nil
-        var resultToTest: SampleResult?
 
         // WHEN
-        fetcher.perform(SearchPhotosRequest.mocked()) { (result: SampleResult) in
+        var resultToTest: Result<PhotosPage, APIError>?
+        _ = fetcher.getPhotos(query: "query", pageNumber: 1, pageSize: 1) { result in
             resultToTest = result
         }
 
         // THEN
-        let expectedResult = SampleResult.failure(.failedToBuildURLRequest)
+        let expectedResult = Result<PhotosPage, APIError>.failure(.failedToBuildURLRequest)
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
     func test_whenThereIsSuccessfulResponseWithValidData_thenItShouldBeDecodedAndReturnedInCallback() {
         // GIVEN
-        var resultToTest: Result<[String], APIError>?
         mockRequestBuilder.urlRequestStub = .mocked()
-        let sampleString = "some_value"
-        let sampleJson = "[ \"\(sampleString)\" ]"
-        let sampleData = sampleJson.data(using: .utf8)!
+        let sampleData = Data(testBundleFileName: "FlickrSearchPhotosSuccessResponse")!
 
         // WHEN
-        fetcher.perform(SearchPhotosRequest.mocked()) { (result: Result<[String], APIError>) in
+        var resultToTest: Result<PhotosPage, APIError>?
+        _ = fetcher.getPhotos(query: "query", pageNumber: 1, pageSize: 1) { result in
             resultToTest = result
         }
         mockNetwork.dataTaskCompletion?(.success(sampleData))
 
         // THEN
-        let expectedResult = Result<[String], APIError>.success([sampleString])
+        guard  let decodedPhotosPage = try? JSONDecoder().decode(FlickrResponse<Photos>.self, from: sampleData),
+            let photos = try? decodedPhotosPage.result.get().photos else {
+                return XCTFail("Failed to decode fixture.")
+        }
+        let expectedResult = Result<PhotosPage, APIError>.success(photos)
         XCTAssertEqual(resultToTest, expectedResult)
     }
 
@@ -68,10 +70,10 @@ class FlickrFetcherTests: XCTestCase {
 
     func test_whenGetDataBuilderFailsToBuildRequest_thenCallbackIsCalledWithRequestBuildError() {
         // GIVEN
-        var resultToTest: Result<Data, APIError>?
 
         // WHEN
-        fetcher.getData(from: "") {
+        var resultToTest: Result<Data, APIError>?
+        fetcher.getImageData(for: .mocked(id: "??%%")) {
             resultToTest = $0
         }
 
@@ -82,11 +84,11 @@ class FlickrFetcherTests: XCTestCase {
 
     func test_whenGetDataSucceedsWithValidData_thenDataIsReturnedInCallback() {
         // GIVEN
-        var resultToTest: Result<Data, APIError>?
         let sampleData = "sample".data(using: .utf8)!
 
         // WHEN
-        fetcher.getData(from: "sample_url.com") {
+        var resultToTest: Result<Data, APIError>?
+        fetcher.getImageData(for: .mocked()) {
             resultToTest = $0
         }
         mockNetwork.dataTaskCompletion?(.success(sampleData))
@@ -95,5 +97,4 @@ class FlickrFetcherTests: XCTestCase {
         let expectedResult = Result<Data, APIError>.success(sampleData)
         XCTAssertEqual(resultToTest, expectedResult)
     }
-
 }
