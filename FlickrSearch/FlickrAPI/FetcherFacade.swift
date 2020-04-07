@@ -19,7 +19,7 @@ final class Fetcher: FetcherType {
     init(apiKey: String,
          flickrFetcher: PhotosAPI? = nil,
          imageCacher: ImageCacherType = ImageCacher()) {
-        self.flickrFetcher = flickrFetcher ?? FlickrFetcher(key: apiKey)
+        self.flickrFetcher = flickrFetcher ?? FlickrPhotosAPI(key: apiKey)
         self.imageCacher = imageCacher
     }
 

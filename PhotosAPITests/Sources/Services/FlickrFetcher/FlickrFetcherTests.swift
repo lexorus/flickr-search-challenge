@@ -8,14 +8,14 @@ class FlickrFetcherTests: XCTestCase {
     let sampleAPIKey = "sample_api_key"
     var mockRequestBuilder: MockRequestBuilder!
     var mockNetwork: MockNetwork!
-    var fetcher: FlickrFetcher!
+    var fetcher: FlickrPhotosAPI!
 
     override func setUp() {
         super.setUp()
 
         mockRequestBuilder = MockRequestBuilder(apiKey: sampleAPIKey)
         mockNetwork = MockNetwork()
-        fetcher = FlickrFetcher(apiKey: sampleAPIKey,
+        fetcher = FlickrPhotosAPI(apiKey: sampleAPIKey,
                                 urlSession: mockNetwork,
                                 requestBuilder: { _ in mockRequestBuilder })
     }
