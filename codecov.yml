@@ -4,6 +4,10 @@ codecov:
 coverage:
   range: 0..100
   round: down
+  status:
+    project:
+      default:
+        threshold: 1%
 
 comment:
   behavior: new
