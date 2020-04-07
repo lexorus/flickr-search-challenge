@@ -1,4 +1,5 @@
 import Foundation
+import PhotosAPI
 
 final class Paginator {
     let pageSize: UInt

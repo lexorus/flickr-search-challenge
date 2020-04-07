@@ -1,4 +1,5 @@
 import Foundation
+import PhotosAPI
 import RxSwift
 
 final class SearchViewModel {

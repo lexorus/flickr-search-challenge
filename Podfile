@@ -13,3 +13,11 @@ target 'FlickrSearch' do
 	    pod 'RxTest', '~> 5'
 	end
 end
+
+target 'PhotosAPI' do
+	pod 'MicroNetwork', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.2.0'
+
+	target 'PhotosAPITests' do
+		pod 'MicroNetworkMocks', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.2.0'
+	end
+end

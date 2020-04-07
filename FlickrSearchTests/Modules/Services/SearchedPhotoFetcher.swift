@@ -1,4 +1,6 @@
 import XCTest
+import PhotosAPI
+import PhotosAPIMocks
 @testable import FlickrSearch
 
 final class SearchedPhotoFetcher: XCTestCase {

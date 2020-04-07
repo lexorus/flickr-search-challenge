@@ -1,4 +1,5 @@
 import XCTest
+import PhotosAPI
 import RxSwift
 import RxTest
 import RxBlocking

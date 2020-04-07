@@ -1,4 +1,5 @@
 import UIKit
+import PhotosAPI
 
 final class SearchCellModelsBuilder {
     typealias ImageDataProvider = ((Photo), @escaping (Result<Data, APIError>) -> Void) -> Void

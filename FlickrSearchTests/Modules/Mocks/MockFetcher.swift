@@ -1,4 +1,6 @@
 import Foundation
+import PhotosAPI
+import PhotosAPIMocks
 @testable import FlickrSearch
 
 final class MockFetcher: FetcherType {
