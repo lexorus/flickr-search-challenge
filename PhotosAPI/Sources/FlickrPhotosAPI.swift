@@ -40,7 +40,7 @@ public final class FlickrPhotosAPI: PhotosAPI {
 
     @discardableResult
     private func perform<T: Decodable>(_ request: FlickrRequest,
-                               callback: @escaping (Result<T, APIError>) -> Void) -> Cancellable {
+                                       callback: @escaping (Result<T, APIError>) -> Void) -> Cancellable {
         guard let urlRequest = requestBuilder.urlRequest(from: request) else {
             callback(.failure(.failedToBuildURLRequest))
             return EmptyCancellable()
