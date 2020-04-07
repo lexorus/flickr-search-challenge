@@ -15,11 +15,9 @@ target 'FlickrSearch' do
 end
 
 target 'PhotosAPI' do
-	pod 'MicroNetwork', :git => 'https://github.com/lexorus/MicroNetwork.git', :branch => 'feature/expose-framework-through-cocoapods'
+	pod 'MicroNetwork', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.2.0'
 
 	target 'PhotosAPITests' do
-		# inherit! :search_paths
-
-		pod 'MicroNetworkMocks', :git => 'https://github.com/lexorus/MicroNetwork.git', :branch => 'feature/expose-framework-through-cocoapods'
+		pod 'MicroNetworkMocks', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.2.0'
 	end
 end
