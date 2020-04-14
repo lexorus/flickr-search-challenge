@@ -15,9 +15,9 @@ target 'FlickrSearch' do
 end
 
 target 'PhotosAPI' do
-	pod 'MicroNetwork', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.2.0'
+	pod 'MicroNetwork', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.3.0'
 
 	target 'PhotosAPITests' do
-		pod 'MicroNetworkMocks', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.2.0'
+		pod 'MicroNetworkMocks', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.3.0'
 	end
 end
