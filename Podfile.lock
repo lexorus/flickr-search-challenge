@@ -1,7 +1,7 @@
 PODS:
   - Differentiator (4.0.1)
-  - MicroNetwork (0.2.0)
-  - MicroNetworkMocks (0.2.0):
+  - MicroNetwork (0.3.0)
+  - MicroNetworkMocks (0.3.0):
     - MicroNetwork
   - RxBlocking (5.1.1):
     - RxSwift (~> 5)
@@ -19,8 +19,8 @@ PODS:
     - RxSwift (~> 5)
 
 DEPENDENCIES:
-  - MicroNetwork (from `https://github.com/lexorus/MicroNetwork.git`, tag `0.2.0`)
-  - MicroNetworkMocks (from `https://github.com/lexorus/MicroNetwork.git`, tag `0.2.0`)
+  - MicroNetwork (from `https://github.com/lexorus/MicroNetwork.git`, tag `0.3.0`)
+  - MicroNetworkMocks (from `https://github.com/lexorus/MicroNetwork.git`, tag `0.3.0`)
   - RxBlocking (~> 5)
   - RxCocoa (~> 5)
   - RxDataSources (~> 4.0)
@@ -40,23 +40,23 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   MicroNetwork:
     :git: https://github.com/lexorus/MicroNetwork.git
-    :tag: 0.2.0
+    :tag: 0.3.0
   MicroNetworkMocks:
     :git: https://github.com/lexorus/MicroNetwork.git
-    :tag: 0.2.0
+    :tag: 0.3.0
 
 CHECKOUT OPTIONS:
   MicroNetwork:
     :git: https://github.com/lexorus/MicroNetwork.git
-    :tag: 0.2.0
+    :tag: 0.3.0
   MicroNetworkMocks:
     :git: https://github.com/lexorus/MicroNetwork.git
-    :tag: 0.2.0
+    :tag: 0.3.0
 
 SPEC CHECKSUMS:
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
-  MicroNetwork: b190943397bbc485dbffb117effaaaad6500fd44
-  MicroNetworkMocks: 2da92a66c3dd5f0553c20e77dae0376d6953b3f7
+  MicroNetwork: dd7bfb090837af2eaa439e2969baa9aa5a9bbc9e
+  MicroNetworkMocks: a148e71dafc5bccd0a85d55c035eefc2e61e19d8
   RxBlocking: 5f700a78cad61ce253ebd37c9a39b5ccc76477b4
   RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
   RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
@@ -64,6 +64,6 @@ SPEC CHECKSUMS:
   RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
   RxTest: 711632d5644dffbeb62c936a521b5b008a1e1faa
 
-PODFILE CHECKSUM: 76c563120b0e78591c2e4de84ba014e56be7b406
+PODFILE CHECKSUM: 7d6b580b225d6bc595b411648cb1455a340c131d
 
 COCOAPODS: 1.9.1
