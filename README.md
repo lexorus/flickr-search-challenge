@@ -1,4 +1,5 @@
 # FlickrSearch
+![CI](https://github.com/lexorus/flickr-search/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/lexorus/flickr-search/branch/master/graph/badge.svg)](https://codecov.io/gh/lexorus/flickr-search)
 
 `FlickrSearch` is a single view application that can search trough Flickr photos using [Flickr API](https://www.flickr.com/services/api) and then displays the search results in a paginated collection view.
 The application was written using Xcode 11.2.1 and Swift 5.1
