@@ -35,8 +35,6 @@
 		65E07DBC238352C700384B72 /* SearchViewControllerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DBB238352C700384B72 /* SearchViewControllerState.swift */; };
 		8F4A33747AB0D84594FD546D /* Pods_PhotosAPI_PhotosAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAF93AF86EA898AB28ACB7EA /* Pods_PhotosAPI_PhotosAPITests.framework */; };
 		B11DDEF3243C729800C52E32 /* PhotosAPIMocks.h in Headers */ = {isa = PBXBuildFile; fileRef = B11DDEE3243C729800C52E32 /* PhotosAPIMocks.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B11DDEF6243C729800C52E32 /* PhotosAPIMocks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B11DDEE1243C729800C52E32 /* PhotosAPIMocks.framework */; };
-		B11DDEF7243C729800C52E32 /* PhotosAPIMocks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B11DDEE1243C729800C52E32 /* PhotosAPIMocks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B11DDF04243C733700C52E32 /* MockCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF03243C733700C52E32 /* MockCancellable.swift */; };
 		B11DDF07243C735400C52E32 /* FuncCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF06243C735400C52E32 /* FuncCheck.swift */; };
 		B11DDF09243C73AD00C52E32 /* MockPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF08243C73AD00C52E32 /* MockPhoto.swift */; };
@@ -87,13 +85,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 653EC6D3238138D5007F1404;
 			remoteInfo = FlickrSearchChallenge;
-		};
-		B11DDEF4243C729800C52E32 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 653EC6CC238138D5007F1404 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B11DDEE0243C729800C52E32;
-			remoteInfo = PhotosAPIMocks;
 		};
 		B11DDEFE243C72E800C52E32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -146,7 +137,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B11DDEF7243C729800C52E32 /* PhotosAPIMocks.framework in Embed Frameworks */,
 				B1A5CE31243B1BEB0004F3F7 /* PhotosAPI.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -249,7 +239,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1A5CE2F243B1BEB0004F3F7 /* PhotosAPI.framework in Frameworks */,
-				B11DDEF6243C729800C52E32 /* PhotosAPIMocks.framework in Frameworks */,
 				F2416D84E1CC93BF65E45E26 /* Pods_FlickrSearch.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -786,7 +775,6 @@
 			);
 			dependencies = (
 				B1A5CE2E243B1BEB0004F3F7 /* PBXTargetDependency */,
-				B11DDEF5243C729800C52E32 /* PBXTargetDependency */,
 			);
 			name = FlickrSearch;
 			productName = FlickrSearchChallenge;
@@ -1211,11 +1199,6 @@
 			isa = PBXTargetDependency;
 			target = 653EC6D3238138D5007F1404 /* FlickrSearch */;
 			targetProxy = 653EC6EB238138D8007F1404 /* PBXContainerItemProxy */;
-		};
-		B11DDEF5243C729800C52E32 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B11DDEE0243C729800C52E32 /* PhotosAPIMocks */;
-			targetProxy = B11DDEF4243C729800C52E32 /* PBXContainerItemProxy */;
 		};
 		B11DDEFF243C72E800C52E32 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
