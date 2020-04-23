@@ -33,7 +33,7 @@ public final class FlickrPhotosAPI: PhotosAPI {
         }
     }
 
-    public func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {
+    public func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
         let urlString = PhotoStringURLBuilder().urlString(for: photo)
         return getData(from: urlString, callback: callback)
     }
@@ -58,12 +58,12 @@ public final class FlickrPhotosAPI: PhotosAPI {
         }
     }
 
-    private func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) {
+    private func getData(from stringURL: String, callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable {
         guard let url = URL(string: stringURL) else {
             callback(.failure(.failedToBuildURLRequest))
-            return
+            return EmptyCancellable()
         }
-        perform(URLRequest(url: url), callback: callback)
+        return perform(URLRequest(url: url), callback: callback)
     }
 
     @discardableResult

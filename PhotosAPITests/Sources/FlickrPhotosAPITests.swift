@@ -73,7 +73,7 @@ final class FlickrPhotosAPITests: XCTestCase {
 
         // WHEN
         var resultToTest: Result<Data, APIError>?
-        fetcher.getImageData(for: .mocked(id: "??%%")) {
+        _ = fetcher.getImageData(for: .mocked(id: "??%%")) {
             resultToTest = $0
         }
 
@@ -88,7 +88,7 @@ final class FlickrPhotosAPITests: XCTestCase {
 
         // WHEN
         var resultToTest: Result<Data, APIError>?
-        fetcher.getImageData(for: .mocked()) {
+        _ = fetcher.getImageData(for: .mocked()) {
             resultToTest = $0
         }
         mockNetwork.dataTaskCompletion?(.success(sampleData))

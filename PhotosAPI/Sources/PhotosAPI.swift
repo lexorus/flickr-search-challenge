@@ -7,5 +7,5 @@ public protocol PhotosAPI {
                    callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable
 
     func getImageData(for photo: Photo,
-                      callback: @escaping (Result<Data, APIError>) -> Void)
+                      callback: @escaping (Result<Data, APIError>) -> Void) -> Cancellable
 }
