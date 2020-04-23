@@ -37,7 +37,7 @@ final class Fetcher: FetcherType {
                 callback(.success(data))
                 return
             }
-            self?.flickrFetcher.getImageData(for: photo) { [weak self] result in
+            _ = self?.flickrFetcher.getImageData(for: photo) { [weak self] result in
                 callback(result)
                 guard let data = try? result.get() else { return }
                 self?.imageCacher.set(imageData: data, for: photo.id)
