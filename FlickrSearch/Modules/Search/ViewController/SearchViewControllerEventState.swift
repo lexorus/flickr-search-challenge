@@ -1,6 +1,11 @@
 import Foundation
 
 extension SearchViewController {
+    enum Event {
+        case searchTextDidChange(String)
+        case didScrolledToButtom
+    }
+
     enum State: Equatable {
         case empty
         case noResult

@@ -32,7 +32,7 @@
 		65CC700F2384ABAE00406610 /* MockPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC700E2384ABAE00406610 /* MockPaginator.swift */; };
 		65E07DB723834F4700384B72 /* UICollectionViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */; };
 		65E07DBA23834F8300384B72 /* IdentifiableType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DB923834F8300384B72 /* IdentifiableType.swift */; };
-		65E07DBC238352C700384B72 /* SearchViewControllerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DBB238352C700384B72 /* SearchViewControllerState.swift */; };
+		65E07DBC238352C700384B72 /* SearchViewControllerEventState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DBB238352C700384B72 /* SearchViewControllerEventState.swift */; };
 		8F4A33747AB0D84594FD546D /* Pods_PhotosAPI_PhotosAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAF93AF86EA898AB28ACB7EA /* Pods_PhotosAPI_PhotosAPITests.framework */; };
 		B11DDEF3243C729800C52E32 /* PhotosAPIMocks.h in Headers */ = {isa = PBXBuildFile; fileRef = B11DDEE3243C729800C52E32 /* PhotosAPIMocks.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B11DDF04243C733700C52E32 /* MockCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF03243C733700C52E32 /* MockCancellable.swift */; };
@@ -183,7 +183,7 @@
 		65CC700E2384ABAE00406610 /* MockPaginator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaginator.swift; sourceTree = "<group>"; };
 		65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewExtensions.swift; sourceTree = "<group>"; };
 		65E07DB923834F8300384B72 /* IdentifiableType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableType.swift; sourceTree = "<group>"; };
-		65E07DBB238352C700384B72 /* SearchViewControllerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewControllerState.swift; sourceTree = "<group>"; };
+		65E07DBB238352C700384B72 /* SearchViewControllerEventState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewControllerEventState.swift; sourceTree = "<group>"; };
 		6DF7BD7E0801B0A4531DD432 /* Pods-PhotosAPI-PhotosAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotosAPI-PhotosAPITests.debug.xcconfig"; path = "Target Support Files/Pods-PhotosAPI-PhotosAPITests/Pods-PhotosAPI-PhotosAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 		9AF182DB8DAC2A512725980F /* Pods-FlickrSearchTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlickrSearchTests.release.xcconfig"; path = "Target Support Files/Pods-FlickrSearchTests/Pods-FlickrSearchTests.release.xcconfig"; sourceTree = "<group>"; };
 		9DE6337BAAFF2CCD03778C3E /* Pods_FlickrSearchTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlickrSearchTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -303,7 +303,7 @@
 			children = (
 				653EC6DB238138D6007F1404 /* SearchViewController.swift */,
 				653EC6DD238138D6007F1404 /* Main.storyboard */,
-				65E07DBB238352C700384B72 /* SearchViewControllerState.swift */,
+				65E07DBB238352C700384B72 /* SearchViewControllerEventState.swift */,
 				B1FD2D582435EB9500871D76 /* Services */,
 			);
 			path = ViewController;
@@ -1114,7 +1114,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65E07DBC238352C700384B72 /* SearchViewControllerState.swift in Sources */,
+				65E07DBC238352C700384B72 /* SearchViewControllerEventState.swift in Sources */,
 				65897CD8238431BF009225B4 /* SearchedPhotosFetcher.swift in Sources */,
 				65897CDB238433EA009225B4 /* SearchCellModelsBuilder.swift in Sources */,
 				65E07DB723834F4700384B72 /* UICollectionViewExtensions.swift in Sources */,

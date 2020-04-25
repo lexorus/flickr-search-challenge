@@ -1,21 +1,24 @@
 import Foundation
 import PhotosAPI
 import RxSwift
+import RxRelay
 
 final class SearchViewModel {
+    private let viewStateReducer = SearchViewStateReducer()
+    private var photos = BehaviorSubject(value: [Photo]())
+    private var searchPage = SearchPage(query: .empty)
+
     private let fetcher: FetcherType
-    private let searchPhotosFetcher: SearchedPhotosFetcherType
     private let disposeBag = DisposeBag()
 
-    let viewState = BehaviorSubject(value: SearchViewController.State.empty)
-    let items = BehaviorSubject(value: [PhotoCell.Model]())
+    var viewState = BehaviorSubject(value: SearchViewController.State.empty)
+    var items: Observable<[PhotoCell.Model]> { photos.map { $0.map(self.photoCellModel(for:)) } }
     let searchText = BehaviorSubject(value: String.empty)
     let isScrolledToBottom = BehaviorSubject(value: false)
 
     init(fetcher: FetcherType = Fetcher(apiKey: "3e7cc266ae2b0e0d78e279ce8e361736"),
          searchPhotosFetcher: SearchedPhotosFetcherType? = nil) {
         self.fetcher = fetcher
-        self.searchPhotosFetcher = searchPhotosFetcher ?? SearchedPhotosFetcher(fetcher: fetcher)
 
         searchText.asObserver()
             .distinctUntilChanged()
@@ -31,28 +34,41 @@ final class SearchViewModel {
     }
 
     private func searchTextDidChange(text: String) {
-        if text.isEmpty {
-            searchPhotosFetcher.cancelCurrentRequest()
-            viewState.onNext(.empty)
-            return
-        }
-        viewState.onNext(.loading(.initial))
-        searchPhotosFetcher.loadFirstPage(for: text) { [weak self] (result) in
-            self?.process(initialLoadResult: result)
-        }
+        update(using: reducer(for: .searchTextDidChange(text)))
     }
 
-    private func process(initialLoadResult result: SearchedPhotosFetcher.Result) {
-        switch result {
-        case .empty:
-            items.onNext([])
-            viewState.onNext(.noResult)
-        case .photos(let photos):
-            items.onNext(photos.removingDuplicates().map(photoCellModel))
-            viewState.onNext(.loaded(.initial))
-        case .error(let error):
-            viewState.onNext(.error(error.description))
-        }
+    private func loadNextPage() {
+        update(using: reducer(for: .didScrolledToButtom))
+    }
+
+    func update(using reducer: (_ viewState: SearchViewController.State, _ photos: [Photo]) -> BehaviorRelay<(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo])>) {
+        reducer(try! viewState.value(), try! photos.value())
+            .subscribe(onNext: weakify(self, SearchViewModel.set))
+            .disposed(by: disposeBag)
+    }
+
+    func set(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo]) {
+        searchPage = page
+        let newPhotos = newPhotos
+            .removingDuplicates(existingIds: try! photos.value().map(\.id))
+        self.photos.onNext(try! photos.value() + newPhotos)
+        self.viewState.onNext(viewState)
+    }
+
+    enum ViewEvent {
+        case searchTextDidChange(String)
+        case didScrolledToButtom
+    }
+
+    func reducer(for viewEvent: ViewEvent) ->
+        (_ viewState: SearchViewController.State, _ photos: [Photo]) -> BehaviorRelay<(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo])> {
+            let searchPage: SearchPage = {
+                switch viewEvent {
+                case .searchTextDidChange(let text): return .init(query: text)
+                case .didScrolledToButtom: return self.searchPage
+                }
+            }()
+            return curry(viewStateReducer.reduce)(searchPage)
     }
 
     private func photoCellModel(for photo: Photo) -> PhotoCell.Model {
@@ -63,31 +79,6 @@ final class SearchViewModel {
 
         return SearchCellModelsBuilder().photoCellModel(for: photo,
                                                         imageProvider: imageProvider)
-    }
-
-    private func loadNextPage() {
-        guard let paginator = searchPhotosFetcher.searchPhotosInfo?.paginator, !paginator.isLastPage else { return }
-        viewState.onNext(.loading(.iterative))
-        searchPhotosFetcher.loadNextPage { [weak self] result in
-            self?.process(nextPageLoadResult: result)
-        }
-    }
-
-    private func process(nextPageLoadResult result: SearchedPhotosFetcher.Result) {
-        switch result {
-        case .empty:
-            viewState.onNext(.loaded(.iterative))
-        case .photos(let photos):
-            let currentModels = (try? items.value()) ?? []
-            let newModels = photos
-                .removingDuplicates(existingIds: currentModels.map(\.id))
-                .map(photoCellModel)
-            items.onNext(currentModels + newModels)
-            viewState.onNext(.loaded(.iterative))
-        case .error(let error):
-            debugPrint("Failed to load next page. Error: \(error.description)")
-            viewState.onNext(.loaded(.iterative))
-        }
     }
 }
 
@@ -108,3 +99,20 @@ private extension Array where Element == Photo {
         }
     }
 }
+
+// swiftlint:disable identifier_name
+func curry<A, B, C, D>(_ f: @escaping (A, B, C) -> D) -> (A) -> ((B, C) -> D) {
+    return { a in
+        return { b, c in
+            return f(a, b, c)
+        }
+    }
+}
+
+func weakify<T: AnyObject, U, V, W>(_ instance: T,
+                                    _ function: @escaping (T) -> (U, V, W) -> Void) -> ((U, V, W) -> Void) {
+    return { [weak instance] u, v, w in
+        return instance.flatMap(function)?(u, v, w)
+    }
+}
+// swiftlint:enable identifier_name
