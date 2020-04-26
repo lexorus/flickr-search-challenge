@@ -51,7 +51,12 @@ final class SearchViewModel {
         searchPage = page
         let newPhotos = newPhotos
             .removingDuplicates(existingIds: photos.map(\.id))
-        self.photos.onNext(photos + newPhotos)
+        if case let .loaded(stage) = viewState {
+            switch stage {
+            case .initial: self.photos.onNext(newPhotos)
+            case .iterative: self.photos.onNext(photos + newPhotos)
+            }
+        }
         self.viewState.onNext(viewState)
     }
 
