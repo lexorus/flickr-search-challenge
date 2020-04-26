@@ -4,6 +4,12 @@ import RxSwift
 import RxRelay
 
 final class SearchViewModel {
+    typealias ViewEvent = SearchViewController.Event
+    typealias ViewState = SearchViewController.State
+    private typealias Reducer =
+        (_ viewState: ViewState, _ photos: [Photo]) ->
+        BehaviorRelay<(page: SearchPage, viewState: ViewState, newPhotos: [Photo])>
+
     private let viewStateReducer = SearchViewStateReducer()
     private var photos = BehaviorSubject(value: [Photo]())
     private var searchPage = SearchPage(query: .empty)
@@ -11,8 +17,9 @@ final class SearchViewModel {
     private let fetcher: FetcherType
     private let disposeBag = DisposeBag()
 
-    var viewState = BehaviorSubject(value: SearchViewController.State.empty)
+    let viewState = BehaviorSubject(value: ViewState.empty)
     var items: Observable<[PhotoCell.Model]> { photos.map { $0.map(self.photoCellModel(for:)) } }
+
     let searchText = BehaviorSubject(value: String.empty)
     let isScrolledToBottom = BehaviorSubject(value: false)
 
@@ -22,53 +29,41 @@ final class SearchViewModel {
 
         searchText.asObserver()
             .distinctUntilChanged()
-            .subscribe(onNext: searchTextDidChange(text:))
+            .subscribe(onNext: compose(reduce, compose(ViewEvent.searchTextDidChange, reducer)))
             .disposed(by: disposeBag)
 
         isScrolledToBottom.asObserver()
             .distinctUntilChanged()
             .filter { $0 == true }
-            .map { _ in () }
-            .subscribe(onNext: loadNextPage)
+            .map { _ in ViewEvent.didScrolledToButtom }
+            .subscribe(onNext: compose(reducer, reduce))
             .disposed(by: disposeBag)
     }
 
-    private func searchTextDidChange(text: String) {
-        update(using: reducer(for: .searchTextDidChange(text)))
-    }
-
-    private func loadNextPage() {
-        update(using: reducer(for: .didScrolledToButtom))
-    }
-
-    func update(using reducer: (_ viewState: SearchViewController.State, _ photos: [Photo]) -> BehaviorRelay<(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo])>) {
-        reducer(try! viewState.value(), try! photos.value())
+    private func reduce(using reducer: Reducer) {
+        guard let viewState = try? viewState.value(), let photos = try? photos.value() else { return }
+        reducer(viewState, photos)
             .subscribe(onNext: weakify(self, SearchViewModel.set))
             .disposed(by: disposeBag)
     }
 
-    func set(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo]) {
+    private func set(page: SearchPage, viewState: ViewState, newPhotos: [Photo]) {
+        guard let photos = try? photos.value() else { return }
         searchPage = page
         let newPhotos = newPhotos
-            .removingDuplicates(existingIds: try! photos.value().map(\.id))
-        self.photos.onNext(try! photos.value() + newPhotos)
+            .removingDuplicates(existingIds: photos.map(\.id))
+        self.photos.onNext(photos + newPhotos)
         self.viewState.onNext(viewState)
     }
 
-    enum ViewEvent {
-        case searchTextDidChange(String)
-        case didScrolledToButtom
-    }
-
-    func reducer(for viewEvent: ViewEvent) ->
-        (_ viewState: SearchViewController.State, _ photos: [Photo]) -> BehaviorRelay<(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo])> {
-            let searchPage: SearchPage = {
-                switch viewEvent {
-                case .searchTextDidChange(let text): return .init(query: text)
-                case .didScrolledToButtom: return self.searchPage
-                }
-            }()
-            return curry(viewStateReducer.reduce)(searchPage)
+    private func reducer(for viewEvent: ViewEvent) -> Reducer {
+        let searchPage: SearchPage = {
+            switch viewEvent {
+            case .searchTextDidChange(let text): return .init(query: text)
+            case .didScrolledToButtom: return self.searchPage
+            }
+        }()
+        return curry(viewStateReducer.reduce)(searchPage)
     }
 
     private func photoCellModel(for photo: Photo) -> PhotoCell.Model {
@@ -99,20 +94,3 @@ private extension Array where Element == Photo {
         }
     }
 }
-
-// swiftlint:disable identifier_name
-func curry<A, B, C, D>(_ f: @escaping (A, B, C) -> D) -> (A) -> ((B, C) -> D) {
-    return { a in
-        return { b, c in
-            return f(a, b, c)
-        }
-    }
-}
-
-func weakify<T: AnyObject, U, V, W>(_ instance: T,
-                                    _ function: @escaping (T) -> (U, V, W) -> Void) -> ((U, V, W) -> Void) {
-    return { [weak instance] u, v, w in
-        return instance.flatMap(function)?(u, v, w)
-    }
-}
-// swiftlint:enable identifier_name

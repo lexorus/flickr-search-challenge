@@ -45,6 +45,7 @@
 		B13243882451B180006E4BBE /* PhotosAPIRxAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13243872451B180006E4BBE /* PhotosAPIRxAdapterTests.swift */; };
 		B1429BD324334088001478D4 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1429BD224334088001478D4 /* SearchViewModel.swift */; };
 		B174F9452434B25C00A9A4A8 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B174F9442434B25C00A9A4A8 /* StringExtensions.swift */; };
+		B18E63DA2455CF57003B4115 /* FunctionalHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18E63D92455CF57003B4115 /* FunctionalHelpers.swift */; };
 		B19BB4CF243CC91100ACC7D0 /* FlickrPhotosAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19BB4CE243CC91100ACC7D0 /* FlickrPhotosAPI.swift */; };
 		B1A5CE23243B1BEB0004F3F7 /* PhotosAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A5CE1A243B1BEA0004F3F7 /* PhotosAPI.framework */; };
 		B1A5CE2C243B1BEB0004F3F7 /* PhotosAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = B1A5CE1C243B1BEB0004F3F7 /* PhotosAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -201,6 +202,7 @@
 		B13243872451B180006E4BBE /* PhotosAPIRxAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosAPIRxAdapterTests.swift; sourceTree = "<group>"; };
 		B1429BD224334088001478D4 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		B174F9442434B25C00A9A4A8 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		B18E63D92455CF57003B4115 /* FunctionalHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionalHelpers.swift; sourceTree = "<group>"; };
 		B19BB4CE243CC91100ACC7D0 /* FlickrPhotosAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrPhotosAPI.swift; sourceTree = "<group>"; };
 		B1A5CE1A243B1BEA0004F3F7 /* PhotosAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PhotosAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1A5CE1C243B1BEB0004F3F7 /* PhotosAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotosAPI.h; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				651C017223854DC3003BE167 /* Atomic.swift */,
+				B18E63D92455CF57003B4115 /* FunctionalHelpers.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1126,6 +1129,7 @@
 				B13243862451A63E006E4BBE /* RxPhotosAPI.swift in Sources */,
 				65E07DBA23834F8300384B72 /* IdentifiableType.swift in Sources */,
 				B1429BD324334088001478D4 /* SearchViewModel.swift in Sources */,
+				B18E63DA2455CF57003B4115 /* FunctionalHelpers.swift in Sources */,
 				651C017323854DC3003BE167 /* Atomic.swift in Sources */,
 				B174F9452434B25C00A9A4A8 /* StringExtensions.swift in Sources */,
 				653EC6DC238138D6007F1404 /* SearchViewController.swift in Sources */,
