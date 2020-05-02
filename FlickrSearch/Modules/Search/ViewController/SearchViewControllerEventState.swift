@@ -3,7 +3,7 @@ import Foundation
 extension SearchViewController {
     enum Event {
         case searchTextDidChange(String)
-        case didScrolledToButtom
+        case didScrolledToBottom
     }
 
     enum State: Equatable {

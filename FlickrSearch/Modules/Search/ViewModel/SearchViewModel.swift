@@ -34,7 +34,7 @@ final class SearchViewModel {
         isScrolledToBottom.asObserver()
             .distinctUntilChanged()
             .filter { $0 == true }
-            .map { _ in ViewEvent.didScrolledToButtom }
+            .map { _ in ViewEvent.didScrolledToBottom }
             .subscribe(onNext: compose(reducer, reduce))
             .disposed(by: disposeBag)
     }
@@ -46,17 +46,9 @@ final class SearchViewModel {
             .disposed(by: disposeBag)
     }
 
-    private func set(page: SearchPage, viewState: ViewState, newPhotos: [Photo]) {
-        guard let photos = try? photos.value() else { return }
+    private func set(page: SearchPage, viewState: ViewState, photos: [Photo]) {
         searchPage = page
-        let newPhotos = newPhotos
-            .removingDuplicates(existingIds: photos.map(\.id))
-        if case let .loaded(stage) = viewState {
-            switch stage {
-            case .initial: self.photos.onNext(newPhotos)
-            case .iterative: self.photos.onNext(photos + newPhotos)
-            }
-        }
+        self.photos.onNext(photos)
         self.viewState.onNext(viewState)
     }
 
@@ -64,7 +56,7 @@ final class SearchViewModel {
         let searchPage: SearchPage = {
             switch viewEvent {
             case .searchTextDidChange(let text): return .init(query: text)
-            case .didScrolledToButtom: return self.searchPage
+            case .didScrolledToBottom: return self.searchPage
             }
         }()
         return curry(viewStateReducer.reduce)(searchPage)
@@ -78,23 +70,5 @@ final class SearchViewModel {
 
         return SearchCellModelsBuilder().photoCellModel(for: photo,
                                                         imageProvider: imageProvider)
-    }
-}
-
-private extension Array where Element == Photo {
-    // Noticed that Flickr can return multiple photos with the same id in one response.
-    // Which will break the animated collection logic and may lead to crash.
-    // It also does make sense to show identical photos for one query.
-    // This surely affects performance, but since we are working with small datasets
-    // it shouldn't be visible.
-    func removingDuplicates(existingIds: [String] = []) -> [Photo] {
-        let existingIdsSet = Set(existingIds)
-        let newPhotosRemovingExisting = filter { !existingIdsSet.contains($0.id) }
-        var idsSet = Set<String>()
-        return newPhotosRemovingExisting.reduce([]) { acc, element in
-            if idsSet.contains(element.id) { return acc }
-            idsSet.insert(element.id)
-            return acc + [element]
-        }
     }
 }

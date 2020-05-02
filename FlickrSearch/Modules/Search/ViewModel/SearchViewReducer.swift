@@ -20,21 +20,52 @@ final class SearchViewReducer {
                       pageNumber: nextPage.number,
                       pageSize: nextPage.size)
             .asObservable()
-            .subscribe(onNext: { (photos) in
-                if photos.photos.isEmpty {
+            .subscribe(onNext: { (newPhotosPage) in
+                if newPhotosPage.photos.isEmpty {
                     relay.accept((page: page,
-                            viewState: .empty,
-                            newPhotos: photos.photos))
+                                  viewState: .empty,
+                                  newPhotos: newPhotosPage.photos))
                     return
                 }
+                let newPhotos = newPhotosPage.photos
+                    .removingDuplicates(existingIds: photos.map(\.id))
+                switch loadingStage {
+                case .initial:
+                    relay.accept((page: nextPage,
+                                  viewState: .loaded(loadingStage),
+                                  newPhotos: newPhotos))
+                case .iterative:
+                    relay.accept((page: nextPage,
+                                  viewState: .loaded(loadingStage),
+                                  newPhotos: photos + newPhotos))
+                }
+
                 relay.accept((page: nextPage,
                         viewState: .loaded(loadingStage),
-                        newPhotos: photos.photos))
+                        newPhotos: newPhotosPage.photos))
             }, onError: { (error) in
                 guard let error = (error as? APIError) else { return }
                 relay.accept((page: page, viewState: .error(error.description), newPhotos: []))
             }).disposed(by: disposeBag)
 
         return relay
+    }
+}
+
+private extension Array where Element == Photo {
+    // Noticed that Flickr can return multiple photos with the same id in one response.
+    // Which will break the animated collection logic and may lead to crash.
+    // It also does make sense to show identical photos for one query.
+    // This surely affects performance, but since we are working with small datasets
+    // it shouldn't be visible.
+    func removingDuplicates(existingIds: [String] = []) -> [Photo] {
+        let existingIdsSet = Set(existingIds)
+        let newPhotosRemovingExisting = filter { !existingIdsSet.contains($0.id) }
+        var idsSet = Set<String>()
+        return newPhotosRemovingExisting.reduce([]) { acc, element in
+            if idsSet.contains(element.id) { return acc }
+            idsSet.insert(element.id)
+            return acc + [element]
+        }
     }
 }
