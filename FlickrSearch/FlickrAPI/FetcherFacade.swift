@@ -2,12 +2,6 @@ import Foundation
 import PhotosAPI
 
 protocol FetcherType {
-    @discardableResult
-    func getPhotos(for query: String,
-                   pageNumber: UInt,
-                   pageSize: UInt,
-                   callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable
-
     func getImageData(for photo: Photo,
                       callback: @escaping (Result<Data, APIError>) -> Void)
 }
@@ -16,19 +10,10 @@ final class Fetcher: FetcherType {
     private let flickrFetcher: PhotosAPI
     private let imageCacher: ImageCacherType
 
-    init(apiKey: String,
-         flickrFetcher: PhotosAPI? = nil,
+    init(flickrFetcher: PhotosAPI,
          imageCacher: ImageCacherType = ImageCacher()) {
-        self.flickrFetcher = flickrFetcher ?? FlickrPhotosAPI(key: apiKey)
+        self.flickrFetcher = flickrFetcher
         self.imageCacher = imageCacher
-    }
-
-    @discardableResult
-    func getPhotos(for query: String,
-                   pageNumber: UInt,
-                   pageSize: UInt,
-                   callback: @escaping (Result<PhotosPage, APIError>) -> Void) -> Cancellable {
-        return flickrFetcher.getPhotos(query: query, pageNumber: pageNumber, pageSize: pageSize, callback: callback)
     }
 
     func getImageData(for photo: Photo, callback: @escaping (Result<Data, APIError>) -> Void) {

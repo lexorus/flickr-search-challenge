@@ -10,7 +10,7 @@ final class SearchViewModel {
         (_ viewState: ViewState, _ photos: [Photo]) ->
         BehaviorRelay<(page: SearchPage, viewState: ViewState, newPhotos: [Photo])>
 
-    private let viewStateReducer = SearchViewReducer()
+    private let viewStateReducer: SearchViewReducer
     private var photos = BehaviorSubject(value: [Photo]())
     private var searchPage = SearchPage(query: .empty)
 
@@ -23,8 +23,9 @@ final class SearchViewModel {
     let searchText = BehaviorSubject(value: String.empty)
     let isScrolledToBottom = BehaviorSubject(value: false)
 
-    init(fetcher: FetcherType = Fetcher(apiKey: "3e7cc266ae2b0e0d78e279ce8e361736")) {
-        self.fetcher = fetcher
+    init(photosAPI: PhotosAPI = FlickrPhotosAPI(key: "3e7cc266ae2b0e0d78e279ce8e361736")) {
+        self.fetcher = Fetcher(flickrFetcher: photosAPI)
+        self.viewStateReducer = SearchViewReducer(loadPhotosAction: PhotosAPIRxAdapter(photosAPI: photosAPI).getPhotos)
 
         searchText.asObserver()
             .distinctUntilChanged()

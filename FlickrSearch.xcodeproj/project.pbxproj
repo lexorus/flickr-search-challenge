@@ -23,11 +23,7 @@
 		653EC7102381450D007F1404 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653EC70F2381450D007F1404 /* DataExtensions.swift */; };
 		65897CDB238433EA009225B4 /* SearchCellModelsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65897CDA238433EA009225B4 /* SearchCellModelsBuilder.swift */; };
 		65C932F423820D3500460C36 /* FetcherFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C932F323820D3500460C36 /* FetcherFacade.swift */; };
-		65CC6FFC2384895E00406610 /* PaginatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC6FFB2384895E00406610 /* PaginatorTests.swift */; };
 		65CC6FFF2384926700406610 /* MockFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC6FFE2384926700406610 /* MockFetcher.swift */; };
-		65CC7001238493DB00406610 /* SearchedPhotoFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC7000238493DB00406610 /* SearchedPhotoFetcher.swift */; };
-		65CC700B2384A45F00406610 /* MockSearchedPhotosFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC700A2384A45F00406610 /* MockSearchedPhotosFetcher.swift */; };
-		65CC700F2384ABAE00406610 /* MockPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CC700E2384ABAE00406610 /* MockPaginator.swift */; };
 		65E07DB723834F4700384B72 /* UICollectionViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */; };
 		65E07DBA23834F8300384B72 /* IdentifiableType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DB923834F8300384B72 /* IdentifiableType.swift */; };
 		65E07DBC238352C700384B72 /* SearchViewControllerEventState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DBB238352C700384B72 /* SearchViewControllerEventState.swift */; };
@@ -175,11 +171,7 @@
 		653EC70F2381450D007F1404 /* DataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
 		65897CDA238433EA009225B4 /* SearchCellModelsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCellModelsBuilder.swift; sourceTree = "<group>"; };
 		65C932F323820D3500460C36 /* FetcherFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetcherFacade.swift; sourceTree = "<group>"; };
-		65CC6FFB2384895E00406610 /* PaginatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatorTests.swift; sourceTree = "<group>"; };
 		65CC6FFE2384926700406610 /* MockFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFetcher.swift; sourceTree = "<group>"; };
-		65CC7000238493DB00406610 /* SearchedPhotoFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchedPhotoFetcher.swift; sourceTree = "<group>"; };
-		65CC700A2384A45F00406610 /* MockSearchedPhotosFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSearchedPhotosFetcher.swift; sourceTree = "<group>"; };
-		65CC700E2384ABAE00406610 /* MockPaginator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaginator.swift; sourceTree = "<group>"; };
 		65E07DB623834F4700384B72 /* UICollectionViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewExtensions.swift; sourceTree = "<group>"; };
 		65E07DB923834F8300384B72 /* IdentifiableType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableType.swift; sourceTree = "<group>"; };
 		65E07DBB238352C700384B72 /* SearchViewControllerEventState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewControllerEventState.swift; sourceTree = "<group>"; };
@@ -366,7 +358,6 @@
 		653EC6ED238138D8007F1404 /* FlickrSearchTests */ = {
 			isa = PBXGroup;
 			children = (
-				65C932E62381F79800460C36 /* Mocks */,
 				65CC6FF92384893800406610 /* Modules */,
 				653EC70E238144FC007F1404 /* Helpers */,
 				653EC70223813E64007F1404 /* FlickrAPI */,
@@ -455,31 +446,13 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		65C932E62381F79800460C36 /* Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				65CC700E2384ABAE00406610 /* MockPaginator.swift */,
-			);
-			path = Mocks;
-			sourceTree = "<group>";
-		};
 		65CC6FF92384893800406610 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
 				65CC70092384A43500406610 /* Mocks */,
 				65CC70062384A34600406610 /* ViewModel */,
-				65CC6FFA2384894200406610 /* Services */,
 			);
 			path = Modules;
-			sourceTree = "<group>";
-		};
-		65CC6FFA2384894200406610 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				65CC7000238493DB00406610 /* SearchedPhotoFetcher.swift */,
-				65CC6FFB2384895E00406610 /* PaginatorTests.swift */,
-			);
-			path = Services;
 			sourceTree = "<group>";
 		};
 		65CC70062384A34600406610 /* ViewModel */ = {
@@ -494,7 +467,6 @@
 			isa = PBXGroup;
 			children = (
 				65CC6FFE2384926700406610 /* MockFetcher.swift */,
-				65CC700A2384A45F00406610 /* MockSearchedPhotosFetcher.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1142,16 +1114,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65CC6FFC2384895E00406610 /* PaginatorTests.swift in Sources */,
 				65CC6FFF2384926700406610 /* MockFetcher.swift in Sources */,
 				651C017823855B79003BE167 /* MockImageCacher.swift in Sources */,
 				B13243882451B180006E4BBE /* PhotosAPIRxAdapterTests.swift in Sources */,
 				B1E26C5C243601DD00EA9664 /* SearchViewModelTests.swift in Sources */,
-				65CC700B2384A45F00406610 /* MockSearchedPhotosFetcher.swift in Sources */,
 				651C017523855B11003BE167 /* FetcherFacadeTests.swift in Sources */,
 				653EC7102381450D007F1404 /* DataExtensions.swift in Sources */,
-				65CC7001238493DB00406610 /* SearchedPhotoFetcher.swift in Sources */,
-				65CC700F2384ABAE00406610 /* MockPaginator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

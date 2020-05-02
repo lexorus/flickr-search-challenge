@@ -3,10 +3,15 @@ import RxSwift
 import RxRelay
 
 final class SearchViewReducer {
-    private let api: RxPhotosAPI = PhotosAPIRxAdapter(photosAPI: FlickrPhotosAPI(key: "3e7cc266ae2b0e0d78e279ce8e361736"))
+    private let loadPhotosAction: (_ query: String, _ pageNumber: UInt, _ pageSize: UInt) -> Single<PhotosPage>
     private var disposeBag = DisposeBag()
 
+    init(loadPhotosAction: @escaping (_ query: String, _ pageNumber: UInt, _ pageSize: UInt) -> Single<PhotosPage>) {
+        self.loadPhotosAction = loadPhotosAction
+    }
+
     func reduce(page: SearchPage, viewState: SearchViewController.State, photos: [Photo]) -> BehaviorRelay<(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo])> {
+        disposeBag = DisposeBag()
         if page.query.isEmpty {
             return .init(value: (page: page, viewState: .empty, newPhotos: []))
         }
@@ -16,34 +21,51 @@ final class SearchViewReducer {
 
         let loadingStage: SearchViewController.State.LoadingStage = page.isFirst ? .initial : .iterative
         let relay = BehaviorRelay<(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo])>(value: (page: page, viewState: .loading(loadingStage), newPhotos: photos))
-        api.getPhotos(query: nextPage.query,
-                      pageNumber: nextPage.number,
-                      pageSize: nextPage.size)
+        loadPhotosAction(nextPage.query,
+                         nextPage.number,
+                         nextPage.size)
             .asObservable()
             .subscribe(onNext: { (newPhotosPage) in
+                let updatedPage = SearchPage(query: page.query,
+                                             pageSize: newPhotosPage.itemsPerPage,
+                                             totalNumberOfPages: newPhotosPage.totalNumberOfPages,
+                                             currentPage: newPhotosPage.pageNumber)
                 if newPhotosPage.photos.isEmpty {
-                    relay.accept((page: page,
-                                  viewState: .empty,
-                                  newPhotos: newPhotosPage.photos))
+                    switch loadingStage {
+                    case .initial:
+                        relay.accept((page: updatedPage,
+                                      viewState: .noResult,
+                                      newPhotos: newPhotosPage.photos))
+                    case .iterative:
+                        relay.accept((page: updatedPage,
+                                      viewState: .loaded(loadingStage),
+                                      newPhotos: newPhotosPage.photos))
+                    }
                     return
                 }
                 let newPhotos = newPhotosPage.photos
                     .removingDuplicates(existingIds: photos.map(\.id))
                 switch loadingStage {
                 case .initial:
-                    relay.accept((page: nextPage,
+                    relay.accept((page: updatedPage,
                                   viewState: .loaded(loadingStage),
                                   newPhotos: newPhotos))
                 case .iterative:
-                    relay.accept((page: nextPage,
+                    relay.accept((page: updatedPage,
                                   viewState: .loaded(loadingStage),
                                   newPhotos: photos + newPhotos))
                 }
-
-                relay.accept((page: nextPage,
-                        viewState: .loaded(loadingStage),
-                        newPhotos: newPhotosPage.photos))
             }, onError: { (error) in
+                switch loadingStage {
+                case .initial:
+                    relay.accept((page: page,
+                                  viewState: .empty,
+                                  newPhotos: photos))
+                case .iterative:
+                    relay.accept((page: page,
+                                  viewState: .loaded(loadingStage),
+                                  newPhotos: photos))
+                }
                 guard let error = (error as? APIError) else { return }
                 relay.accept((page: page, viewState: .error(error.description), newPhotos: []))
             }).disposed(by: disposeBag)
