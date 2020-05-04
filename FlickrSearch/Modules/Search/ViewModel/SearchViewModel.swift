@@ -4,11 +4,15 @@ import RxSwift
 import RxRelay
 
 final class SearchViewModel {
+    struct State {
+        let searchPage: SearchPage
+        let viewState: SearchViewController.State
+        let photos: [Photo]
+    }
+
     typealias ViewEvent = SearchViewController.Event
     typealias ViewState = SearchViewController.State
-    private typealias Reducer =
-        (_ viewState: ViewState, _ photos: [Photo]) ->
-        BehaviorRelay<(page: SearchPage, viewState: ViewState, newPhotos: [Photo])>
+    private typealias Reducer = (State) -> BehaviorRelay<State>
 
     private let viewStateReducer: SearchViewReducer
     private var photos = BehaviorSubject(value: [Photo]())
@@ -42,25 +46,19 @@ final class SearchViewModel {
 
     private func reduce(using reducer: Reducer) {
         guard let viewState = try? viewState.value(), let photos = try? photos.value() else { return }
-        reducer(viewState, photos)
+        reducer(.init(searchPage: searchPage, viewState: viewState, photos: photos))
             .subscribe(onNext: weakify(self, SearchViewModel.set))
             .disposed(by: disposeBag)
     }
 
-    private func set(page: SearchPage, viewState: ViewState, photos: [Photo]) {
-        searchPage = page
-        self.photos.onNext(photos)
-        self.viewState.onNext(viewState)
+    private func set(state: State) {
+        searchPage = state.searchPage
+        self.photos.onNext(state.photos)
+        self.viewState.onNext(state.viewState)
     }
 
     private func reducer(for viewEvent: ViewEvent) -> Reducer {
-        let searchPage: SearchPage = {
-            switch viewEvent {
-            case .searchTextDidChange(let text): return .init(query: text)
-            case .didScrolledToBottom: return self.searchPage
-            }
-        }()
-        return curry(viewStateReducer.reduce)(searchPage)
+        return curry(viewStateReducer.reduce)(viewEvent)
     }
 
     private func photoCellModel(for photo: Photo) -> PhotoCell.Model {

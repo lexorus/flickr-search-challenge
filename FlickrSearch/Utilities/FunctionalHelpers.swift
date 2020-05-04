@@ -7,12 +7,16 @@ func compose<A, B, C>(_ f: @escaping (B) -> C, _ g: @escaping (A) -> B) -> (A) -
     { a in f(g(a)) }
 }
 
+func curry<A, B, C>(_ f: @escaping (A, B) -> C) -> (A) -> ((B) -> C) {
+    { a in { b in f(a, b) } }
+}
+
 func curry<A, B, C, D>(_ f: @escaping (A, B, C) -> D) -> (A) -> ((B, C) -> D) {
     { a in { b, c in f(a, b, c) } }
 }
 
-func weakify<T: AnyObject, U, V, W>(_ instance: T,
-                                    _ function: @escaping (T) -> (U, V, W) -> Void) -> ((U, V, W) -> Void) {
-    { [weak instance] u, v, w in instance.flatMap(function)?(u, v, w) }
+func weakify<T: AnyObject, U>(_ instance: T,
+                                    _ function: @escaping (T) -> (U) -> Void) -> ((U) -> Void) {
+    { [weak instance] u in instance.flatMap(function)?(u) }
 }
 // swiftlint:enable identifier_name

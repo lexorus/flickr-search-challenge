@@ -8,6 +8,8 @@ struct SearchPage {
     var isLast: Bool { number == totalNumberOfPages }
     var totalNumberOfItems: UInt { number * size }
 
+    static var empty: SearchPage { .init(query: .empty) }
+
     init(query: String,
          pageSize: UInt = 21,
          totalNumberOfPages: UInt? = nil,

@@ -69,7 +69,7 @@ final class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(try? viewModel.viewState.value(), expectedViewState)
     }
 
-    func test_whenTextDidChangeToEmptyString_thenPhotosFetcherShouldCancelAnyActiveRequests() {
+    func test_whenTextDidChangeToEmptyString_thenPhotosFetchingRequestsShouldBeCancelled() {
         // GIVEN
         let initialText = "query"
         viewModel.searchText.onNext(initialText)
@@ -137,7 +137,7 @@ final class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(states.events, [.next(0, expectedViewState)])
     }
 
-    func test_whenTextDidChange_whenSearchRequestFail_thenViewStateShouldBeEmptyWithError() {
+    func test_whenTextDidChange_whenSearchRequestFail_thenViewStateShouldBeError() {
         // GIVEN
         let searchQuery = "query"
         viewModel.searchText.onNext(searchQuery)
@@ -150,7 +150,7 @@ final class SearchViewModelTests: XCTestCase {
 
         // THEN
         let expectedViewState = SearchViewController.State.error(error.description)
-        XCTAssertEqual(states.events, [.next(0, .empty), .next(0, expectedViewState)])
+        XCTAssertEqual(states.events, [.next(0, expectedViewState)])
     }
 
     func test_whenTextDidChange_whenSearchRequestSucceeds_thenViewStateShouldBeInitialLoaded() {
@@ -247,7 +247,7 @@ final class SearchViewModelTests: XCTestCase {
         testScheduler.start()
 
         // WHEN
-        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(.success(.mocked(photos: [])))
+        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(.success(.mocked(photos: [.mocked()])))
 
         // THEN
         let expectedViewState = SearchViewController.State.loaded(.iterative)

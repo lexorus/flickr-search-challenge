@@ -3,6 +3,8 @@ import RxSwift
 import RxRelay
 
 final class SearchViewReducer {
+    typealias State = SearchViewModel.State
+
     private let loadPhotosAction: (_ query: String, _ pageNumber: UInt, _ pageSize: UInt) -> Single<PhotosPage>
     private var disposeBag = DisposeBag()
 
@@ -10,71 +12,123 @@ final class SearchViewReducer {
         self.loadPhotosAction = loadPhotosAction
     }
 
-    func reduce(page: SearchPage, viewState: SearchViewController.State, photos: [Photo]) -> BehaviorRelay<(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo])> {
+    func reduce(event: SearchViewController.Event, state: State) -> BehaviorRelay<State> {
         disposeBag = DisposeBag()
-        if page.query.isEmpty {
-            return .init(value: (page: page, viewState: .empty, newPhotos: []))
+        switch event {
+        case .searchTextDidChange(let query): return initialLoadingRelay(query: query)
+        case .didScrolledToBottom: return iterativeLoadingRelay(currentState: state)
         }
-        guard let nextPage = page.next() else {
-            return .init(value: (page: page, viewState: viewState, newPhotos: []))
-        }
+    }
 
-        let loadingStage: SearchViewController.State.LoadingStage = page.isFirst ? .initial : .iterative
-        let relay = BehaviorRelay<(page: SearchPage, viewState: SearchViewController.State, newPhotos: [Photo])>(value: (page: page, viewState: .loading(loadingStage), newPhotos: photos))
+    // MARK: - Initial loading
+
+    private func initialLoadingRelay(query: String) -> BehaviorRelay<State> {
+        if query.isEmpty { return .init(value: .empty) }
+        let searchPage = SearchPage(query: query)
+        let relay = BehaviorRelay<State>.initialLoadingRelay(searchPage: searchPage)
+        performInitialLoading(into: relay, using: searchPage)
+
+        return relay
+    }
+
+    private func performInitialLoading(into relay: BehaviorRelay<State>, using searchPage: SearchPage) {
+        loadPhotosAction(searchPage.query,
+                         searchPage.number,
+                         searchPage.size)
+            .asObservable()
+            .subscribe(onNext: { (photosPage) in
+                let updatesSearchPage = SearchPage(query: searchPage.query,
+                                                   pageSize: photosPage.itemsPerPage,
+                                                   totalNumberOfPages: photosPage.totalNumberOfPages,
+                                                   currentPage: photosPage.pageNumber)
+                if photosPage.photos.isEmpty { return relay.accept(.noResult(for: updatesSearchPage)) }
+                relay.accept(.initialLoaded(page: updatesSearchPage, photos: photosPage.photos.removingDuplicates()))
+            }, onError: { (error) in
+                relay.accept(.error(page: .empty, error: error))
+            }).disposed(by: disposeBag)
+    }
+
+    // MARK: - Iterative loading
+
+    private func iterativeLoadingRelay(currentState: State) -> BehaviorRelay<State> {
+        guard let nextPage = currentState.searchPage.next() else { return .init(value: currentState)}
+        let relay = BehaviorRelay<State>.iterativeLoading(nextPage: nextPage, photos: currentState.photos)
+        performIterativeLoading(into: relay, using: nextPage, currentState: currentState)
+
+        return relay
+    }
+
+    private func performIterativeLoading(into relay: BehaviorRelay<State>, using nextPage: SearchPage, currentState: State) {
         loadPhotosAction(nextPage.query,
                          nextPage.number,
                          nextPage.size)
             .asObservable()
-            .subscribe(onNext: { (newPhotosPage) in
-                let updatedPage = SearchPage(query: page.query,
-                                             pageSize: newPhotosPage.itemsPerPage,
-                                             totalNumberOfPages: newPhotosPage.totalNumberOfPages,
-                                             currentPage: newPhotosPage.pageNumber)
-                if newPhotosPage.photos.isEmpty {
-                    switch loadingStage {
-                    case .initial:
-                        relay.accept((page: updatedPage,
-                                      viewState: .noResult,
-                                      newPhotos: newPhotosPage.photos))
-                    case .iterative:
-                        relay.accept((page: updatedPage,
-                                      viewState: .loaded(loadingStage),
-                                      newPhotos: newPhotosPage.photos))
-                    }
-                    return
+            .subscribe(onNext: { (photosPage) in
+                let updatesSearchPage = SearchPage(query: nextPage.query,
+                                                   pageSize: photosPage.itemsPerPage,
+                                                   totalNumberOfPages: photosPage.totalNumberOfPages,
+                                                   currentPage: photosPage.pageNumber)
+                if photosPage.photos.isEmpty {
+                    return relay.accept(.empty(searchPage: updatesSearchPage,
+                                               photos: currentState.photos))
                 }
-                let newPhotos = newPhotosPage.photos
-                    .removingDuplicates(existingIds: photos.map(\.id))
-                switch loadingStage {
-                case .initial:
-                    relay.accept((page: updatedPage,
-                                  viewState: .loaded(loadingStage),
-                                  newPhotos: newPhotos))
-                case .iterative:
-                    relay.accept((page: updatedPage,
-                                  viewState: .loaded(loadingStage),
-                                  newPhotos: photos + newPhotos))
-                }
+                relay.accept(.iterativeLoaded(page: updatesSearchPage, photos: currentState.photos.addRemovingExisting(photosPage.photos)))
             }, onError: { (error) in
-                switch loadingStage {
-                case .initial:
-                    relay.accept((page: page,
-                                  viewState: .empty,
-                                  newPhotos: photos))
-                case .iterative:
-                    relay.accept((page: page,
-                                  viewState: .loaded(loadingStage),
-                                  newPhotos: photos))
-                }
-                guard let error = (error as? APIError) else { return }
-                relay.accept((page: page, viewState: .error(error.description), newPhotos: []))
+                relay.accept(.iterativeLoaded(page: nextPage, photos: currentState.photos))
+                relay.accept(.error(page: nextPage, error: error, photos: currentState.photos))
             }).disposed(by: disposeBag)
+    }
+}
 
-        return relay
+private extension SearchViewModel.State {
+    static var empty: SearchViewModel.State {
+        .init(searchPage: .empty, viewState: .empty, photos: [])
+    }
+
+    static func empty(searchPage: SearchPage, photos: [Photo]) -> SearchViewModel.State {
+        .init(searchPage: searchPage,
+              viewState: .loaded(.iterative),
+              photos: photos)
+    }
+
+    static func noResult(for page: SearchPage) -> SearchViewModel.State {
+        .init(searchPage: page, viewState: .noResult, photos: [])
+    }
+
+    static func initialLoaded(page: SearchPage, photos: [Photo]) -> SearchViewModel.State {
+        .init(searchPage: page, viewState: .loaded(.initial), photos: photos)
+    }
+
+    static func iterativeLoaded(page: SearchPage, photos: [Photo]) -> SearchViewModel.State {
+        .init(searchPage: page, viewState: .loaded(.iterative), photos: photos)
+    }
+
+    static func error(page: SearchPage, error: Error, photos: [Photo] = []) -> SearchViewModel.State {
+        .init(searchPage: page,
+              viewState: .error((error as? APIError)?.description ?? "Unknown Error"),
+              photos: photos)
+    }
+}
+
+private extension BehaviorRelay where Element == SearchViewModel.State {
+    static func initialLoadingRelay(searchPage: SearchPage) -> BehaviorRelay<Element> {
+        .init(value: .init(searchPage: searchPage,
+                           viewState: .loading(.initial),
+                           photos: []))
+    }
+
+    static func iterativeLoading(nextPage: SearchPage, photos: [Photo]) -> BehaviorRelay<Element> {
+        .init(value: .init(searchPage: nextPage,
+                           viewState: .loading(.iterative),
+                           photos: photos))
     }
 }
 
 private extension Array where Element == Photo {
+    func addRemovingExisting(_ photos: [Photo]) -> [Photo] {
+        self + photos.removingDuplicates(existingIds: map(\.id))
+    }
+
     // Noticed that Flickr can return multiple photos with the same id in one response.
     // Which will break the animated collection logic and may lead to crash.
     // It also does make sense to show identical photos for one query.
