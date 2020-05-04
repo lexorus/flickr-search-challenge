@@ -58,7 +58,9 @@ final class SearchViewReducer {
         return relay
     }
 
-    private func performIterativeLoading(into relay: BehaviorRelay<State>, using nextPage: SearchPage, currentState: State) {
+    private func performIterativeLoading(into relay: BehaviorRelay<State>,
+                                         using nextPage: SearchPage,
+                                         currentState: State) {
         loadPhotosAction(nextPage.query,
                          nextPage.number,
                          nextPage.size)
@@ -72,7 +74,8 @@ final class SearchViewReducer {
                     return relay.accept(.empty(searchPage: updatesSearchPage,
                                                photos: currentState.photos))
                 }
-                relay.accept(.iterativeLoaded(page: updatesSearchPage, photos: currentState.photos.addRemovingExisting(photosPage.photos)))
+                relay.accept(.iterativeLoaded(page: updatesSearchPage,
+                                              photos: currentState.photos.addRemovingExisting(photosPage.photos)))
             }, onError: { (error) in
                 relay.accept(.iterativeLoaded(page: nextPage, photos: currentState.photos))
                 relay.accept(.error(page: nextPage, error: error, photos: currentState.photos))

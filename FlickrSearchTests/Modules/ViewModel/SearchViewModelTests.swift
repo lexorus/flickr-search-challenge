@@ -30,7 +30,9 @@ final class SearchViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    private func configureViewModelWithInitialLoad(_ initialLoadResult: Result<PhotosPage, APIError> = .success(.mocked(photos: [.mocked()]))) {
+    private func configureViewModelWithInitialLoad(
+        _ initialLoadResult: Result<PhotosPage, APIError> = .success(.mocked(photos: [.mocked()]))
+    ) {
         let searchString = "query"
         viewModel.searchText.onNext(searchString)
         mockPhotosAPI.getPhotosFuncCheck.arguments?.3(initialLoadResult)
@@ -176,7 +178,9 @@ final class SearchViewModelTests: XCTestCase {
         let states = newViewStatesObserver()
 
         // WHEN
-        let currentViewState = try! viewModel.viewState.value()
+        guard let currentViewState = try? viewModel.viewState.value() else {
+            return XCTFail("Failed to get currentViewState.")
+        }
         testScheduler.createColdObservable([.next(0, true)])
             .bind(to: viewModel.isScrolledToBottom)
             .disposed(by: disposeBag)
