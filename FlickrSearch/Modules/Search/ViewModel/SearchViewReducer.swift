@@ -15,17 +15,17 @@ final class SearchViewReducer {
     func reduce(event: SearchViewController.Event, state: State) -> BehaviorRelay<State> {
         disposeBag = DisposeBag()
         switch event {
-        case .searchTextDidChange(let query): return initialLoadingRelay(query: query)
+        case .searchTextDidChange(let query): return initialLoadingRelay(query: query, currentState: state)
         case .didScrolledToBottom: return iterativeLoadingRelay(currentState: state)
         }
     }
 
     // MARK: - Initial loading
 
-    private func initialLoadingRelay(query: String) -> BehaviorRelay<State> {
+    private func initialLoadingRelay(query: String, currentState: State) -> BehaviorRelay<State> {
         if query.isEmpty { return .init(value: .empty) }
         let searchPage = SearchPage(query: query)
-        let relay = BehaviorRelay<State>.initialLoadingRelay(searchPage: searchPage)
+        let relay = BehaviorRelay<State>.initialLoadingRelay(searchPage: searchPage, photos: currentState.photos)
         performInitialLoading(into: relay, using: searchPage)
 
         return relay
@@ -114,10 +114,10 @@ private extension SearchViewModel.State {
 }
 
 private extension BehaviorRelay where Element == SearchViewModel.State {
-    static func initialLoadingRelay(searchPage: SearchPage) -> BehaviorRelay<Element> {
+    static func initialLoadingRelay(searchPage: SearchPage, photos: [Photo]) -> BehaviorRelay<Element> {
         .init(value: .init(searchPage: searchPage,
                            viewState: .loading(.initial),
-                           photos: []))
+                           photos: photos))
     }
 
     static func iterativeLoading(nextPage: SearchPage, photos: [Photo]) -> BehaviorRelay<Element> {
