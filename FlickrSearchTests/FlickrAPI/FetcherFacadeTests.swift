@@ -13,8 +13,7 @@ final class FetcherFacadeTests: XCTestCase {
 
         mockFlickrFetcher = MockPhotosAPI()
         mockImageCacher = MockImageCacher()
-        fetcher = Fetcher(apiKey: "key",
-                          flickrFetcher: mockFlickrFetcher,
+        fetcher = Fetcher(flickrFetcher: mockFlickrFetcher,
                           imageCacher: mockImageCacher)
     }
 

@@ -1,5 +1,6 @@
 import XCTest
 import PhotosAPI
+import PhotosAPIMocks
 import RxSwift
 import RxTest
 import RxBlocking
@@ -9,8 +10,7 @@ final class SearchViewModelTests: XCTestCase {
     var testScheduler: TestScheduler!
     var disposeBag: DisposeBag!
 
-    var mockFetcher: MockFetcher!
-    var mockSearchedPhotosFetcher: MockSearchedPhotosFetcher!
+    var mockPhotosAPI: MockPhotosAPI!
     var viewModel: SearchViewModel!
 
     override func setUp() {
@@ -19,26 +19,23 @@ final class SearchViewModelTests: XCTestCase {
         testScheduler = TestScheduler(initialClock: 0)
         disposeBag = DisposeBag()
 
-        mockFetcher = MockFetcher(apiKey: "")
-        mockSearchedPhotosFetcher = MockSearchedPhotosFetcher(fetcher: mockFetcher)
-        viewModel = SearchViewModel(fetcher: mockFetcher,
-                                    searchPhotosFetcher: mockSearchedPhotosFetcher)
+        mockPhotosAPI = MockPhotosAPI()
+        viewModel = SearchViewModel(photosAPI: mockPhotosAPI)
     }
 
     override func tearDown() {
         viewModel = nil
-        mockSearchedPhotosFetcher = nil
-        mockFetcher = nil
+        mockPhotosAPI = nil
 
         super.tearDown()
     }
 
-    private func configureViewModelWithInitialLoad(_ initialLoadResult: SearchedPhotosFetcher.Result = .photos([]),
-                                                   paginator: Paginator = .mocked()) {
+    private func configureViewModelWithInitialLoad(
+        _ initialLoadResult: Result<PhotosPage, APIError> = .success(.mocked(photos: [.mocked()]))
+    ) {
         let searchString = "query"
-        mockSearchedPhotosFetcher.searchPhotosInfo = ("another search string", paginator)
         viewModel.searchText.onNext(searchString)
-        mockSearchedPhotosFetcher.loadFirstPageFuncCheck.arguments?.1(initialLoadResult)
+        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(initialLoadResult)
     }
 
     private func newViewStatesObserver(skipStates: Int = 1,
@@ -51,6 +48,7 @@ final class SearchViewModelTests: XCTestCase {
                     return .just(.empty)
                 }
                 .skip(skipStates)
+                .distinctUntilChanged()
                 .drive(states)
                 .disposed(by: disposeBag)
 
@@ -61,25 +59,29 @@ final class SearchViewModelTests: XCTestCase {
 
     func test_whenTextDidChangeToEmptyString_thenViewStateShouldBecomeEmpty() {
         // GIVEN
-        let searchString = String.empty
+        let initialText = "query"
+        viewModel.searchText.onNext(initialText)
+        let emptyText = String.empty
 
         // WHEN
-        viewModel.searchText.onNext(searchString)
+        viewModel.searchText.onNext(emptyText)
 
         // THEN
         let expectedViewState = SearchViewController.State.empty
         XCTAssertEqual(try? viewModel.viewState.value(), expectedViewState)
     }
 
-    func test_whenTextDidChangeToEmptyString_thenPhotosFetcherShouldCancelAnyActiveRequests() {
+    func test_whenTextDidChangeToEmptyString_thenPhotosFetchingRequestsShouldBeCancelled() {
         // GIVEN
-        let searchString = String.empty
+        let initialText = "query"
+        viewModel.searchText.onNext(initialText)
+        let emptyText = String.empty
 
         // WHEN
-        viewModel.searchText.onNext(searchString)
+        viewModel.searchText.onNext(emptyText)
 
         // THEN
-        XCTAssertTrue(mockSearchedPhotosFetcher.cancelCurrentRequestFuncCheck.wasCalled)
+        XCTAssertTrue(mockPhotosAPI.getPhotosStub.cancelFuncCheck.wasCalled)
     }
 
     func test_whenTextDidChangeWithSameQuery_thenViewStateChangeShouldNotBeCalled() {
@@ -125,7 +127,11 @@ final class SearchViewModelTests: XCTestCase {
         let states = newViewStatesObserver()
 
         // WHEN
-        mockSearchedPhotosFetcher.loadFirstPageFuncCheck.arguments?.1(.empty)
+        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(.success(.init(pageNumber: 0,
+                                                                     totalNumberOfPages: 0,
+                                                                     itemsPerPage: 0,
+                                                                     totalItems: "0",
+                                                                     photos: [])))
         testScheduler.start()
 
         // THEN
@@ -141,7 +147,7 @@ final class SearchViewModelTests: XCTestCase {
         let error = APIError.noDataError
 
         // WHEN
-        mockSearchedPhotosFetcher.loadFirstPageFuncCheck.arguments?.1(.error(error))
+        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(.failure(error))
         testScheduler.start()
 
         // THEN
@@ -156,7 +162,7 @@ final class SearchViewModelTests: XCTestCase {
         let states = newViewStatesObserver()
 
         // WHEN
-        mockSearchedPhotosFetcher.loadFirstPageFuncCheck.arguments?.1(.photos([]))
+        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(.success(.mocked(photos: [.mocked()])))
         testScheduler.start()
 
         // THEN
@@ -166,33 +172,22 @@ final class SearchViewModelTests: XCTestCase {
 
     // MARK: - isScrolledToBottom
 
-    func test_whenUserDidScrollToBottom_whenNoContentWasLoadedYet_thenNoNewViewStatesShouldAppear() {
+    func test_whenUserDidScrollToBottom_whenUserReachedLastPage_thenViewStateShouldNotChange() {
         // GIVEN
+        configureViewModelWithInitialLoad(.success(.mocked(pageNumber: 1, totalNumberOfPages: 1)))
         let states = newViewStatesObserver()
 
         // WHEN
+        guard let currentViewState = try? viewModel.viewState.value() else {
+            return XCTFail("Failed to get currentViewState.")
+        }
         testScheduler.createColdObservable([.next(0, true)])
             .bind(to: viewModel.isScrolledToBottom)
             .disposed(by: disposeBag)
         testScheduler.start()
 
         // THEN
-        XCTAssertTrue(states.events.isEmpty)
-    }
-
-    func test_whenUserDidScrollToBottomW_whenUserReachedLastPage_thenNoNewViewStatesShouldAppear() {
-        // GIVEN
-        configureViewModelWithInitialLoad(paginator: .mocked(pageSize: 2, totalNumberOfPages: 1))
-        let states = newViewStatesObserver()
-
-        // WHEN
-        testScheduler.createColdObservable([.next(0, true)])
-            .bind(to: viewModel.isScrolledToBottom)
-            .disposed(by: disposeBag)
-        testScheduler.start()
-
-        // THEN
-        XCTAssertTrue(states.events.isEmpty)
+        XCTAssertEqual(states.events.last?.value, .next(currentViewState))
     }
 
     func test_whenUserDidScrollToBottom_thenViewStateShouldBeIterativeLoading() {
@@ -221,14 +216,14 @@ final class SearchViewModelTests: XCTestCase {
         testScheduler.start()
 
         // WHEN
-        mockSearchedPhotosFetcher.loadNextPageFuncCheck.arguments?(.empty)
+        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(.success(.mocked(photos: [])))
 
         // THEN
         let expectedViewState = SearchViewController.State.loaded(.iterative)
         XCTAssertEqual(states.events, [.next(0, expectedViewState)])
     }
 
-    func test_whenUserDidScrollToBottom_whenNextPageRequestFail_thenViewStateShouldBeIterativeLoaded() {
+    func test_whenUserDidScrollToBottom_whenNextPageRequestFail_thenViewStateShouldBeIterativeLoadedWithError() {
         // GIVEN
         configureViewModelWithInitialLoad()
         testScheduler.createColdObservable([.next(0, true)])
@@ -238,11 +233,12 @@ final class SearchViewModelTests: XCTestCase {
         testScheduler.start()
 
         // WHEN
-        mockSearchedPhotosFetcher.loadNextPageFuncCheck.arguments?(.error(.noDataError))
+        let error = APIError.noDataError
+        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(.failure(error))
 
         // THEN
         let expectedViewState = SearchViewController.State.loaded(.iterative)
-        XCTAssertEqual(states.events, [.next(0, expectedViewState)])
+        XCTAssertEqual(states.events, [.next(0, expectedViewState), .next(0, .error(error.description))])
     }
 
     func test_whenUserDidScrollToBottom_whenNextPageRequestSucceeds_thenViewStateShouldBeIterativeLoaded() {
@@ -255,7 +251,7 @@ final class SearchViewModelTests: XCTestCase {
         testScheduler.start()
 
         // WHEN
-        mockSearchedPhotosFetcher.loadNextPageFuncCheck.arguments?(.photos([]))
+        mockPhotosAPI.getPhotosFuncCheck.arguments?.3(.success(.mocked(photos: [.mocked()])))
 
         // THEN
         let expectedViewState = SearchViewController.State.loaded(.iterative)
