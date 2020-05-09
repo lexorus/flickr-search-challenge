@@ -1,0 +1,17 @@
+name: Changes labeler
+
+# Documentation with macOS virtual environment:
+# https://github.com/actions/virtual-environments/blob/master/images/macos/macos-10.15-Readme.md
+
+on: [pull_request]
+
+jobs:
+  triage:
+    name: Changes labeler
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Label PR based on changes
+        uses: actions/labeler@v2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"

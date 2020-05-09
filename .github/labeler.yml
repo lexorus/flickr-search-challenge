@@ -1,0 +1,18 @@
+"changed:app":
+  - FlickrSearch/**/*
+  - FlickrSearchTests/**/*
+
+"changed:api":
+  - PhotosAPI/**/*
+  - PhotosAPIMocks/**/*
+  - PhotosAPITests/**/*
+
+"changed:ci":
+  - .swiftlint.yml
+  - Dangerfile.swift
+  - codecov.yml
+  - .github/**/*
+
+"changed:dependencies":
+  - Podfile
+  - Podfile.lock
