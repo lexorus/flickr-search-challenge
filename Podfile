@@ -1,3 +1,8 @@
+install! 'cocoapods',
+	:preserve_pod_file_structure => true,
+	:generate_multiple_pod_projects => true,
+	:incremental_installation => true
+
 platform :ios, '10.0'
 use_frameworks!
 
