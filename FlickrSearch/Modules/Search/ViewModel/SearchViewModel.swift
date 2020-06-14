@@ -15,10 +15,10 @@ final class SearchViewModel {
     private typealias Reducer = (State) -> BehaviorRelay<State>
 
     private let viewStateReducer: SearchViewReducer
+    private let cellModelsBuilder: SearchCellModelsBuilder
     private var photos = BehaviorSubject(value: [Photo]())
     private var searchPage = SearchPage(query: .empty)
 
-    private let fetcher: FetcherType
     private let disposeBag = DisposeBag()
 
     let viewState = BehaviorSubject(value: ViewState.empty)
@@ -28,8 +28,10 @@ final class SearchViewModel {
     let isScrolledToBottom = BehaviorSubject(value: false)
 
     init(photosAPI: PhotosAPI = FlickrPhotosAPI(key: "3e7cc266ae2b0e0d78e279ce8e361736")) {
-        self.fetcher = Fetcher(flickrFetcher: photosAPI)
-        self.viewStateReducer = SearchViewReducer(loadPhotosAction: PhotosAPIRxAdapter(photosAPI: photosAPI).getPhotos)
+        let rxPhotosAPI = PhotosAPIRxAdapter(photosAPI: photosAPI)
+        self.viewStateReducer = SearchViewReducer(loadPhotosAction: rxPhotosAPI.getPhotos)
+        let imageDataRepository = ImageDataRepository(imageFetcher: rxPhotosAPI)
+        self.cellModelsBuilder = SearchCellModelsBuilder(imageDataProvider: imageDataRepository)
 
         searchText.asObserver()
             .distinctUntilChanged()
@@ -62,12 +64,6 @@ final class SearchViewModel {
     }
 
     private func photoCellModel(for photo: Photo) -> PhotoCell.Model {
-        let imageProvider: SearchCellModelsBuilder.ImageDataProvider = { [weak self] photo, callback in
-            guard let welf = self else { return }
-            welf.fetcher.getImageData(for: photo, callback: callback)
-        }
-
-        return SearchCellModelsBuilder().photoCellModel(for: photo,
-                                                        imageProvider: imageProvider)
+        return cellModelsBuilder.photoCellModel(for: photo)
     }
 }
