@@ -26,5 +26,5 @@ if let firstCharacter = prTitle.first, firstCharacter.isLowercase {
 
 let prTitleMaxLength = 65
 if prTitle.count > prTitleMaxLength {
-    fail("PR title is too long. It should be less then \(prTitleMaxLength).")
+    fail("PR title is too long. It should be less than \(prTitleMaxLength).")
 }
