@@ -1,26 +1,29 @@
 import XCTest
+import RxSwift
+import RxBlocking
 import PhotosAPI
 import PhotosAPIMocks
 @testable import FlickrSearch
 
 final class FetcherFacadeTests: XCTestCase {
-    var mockFlickrFetcher: MockPhotosAPI!
-    var mockImageCacher: MockImageCacher!
-    var fetcher: Fetcher!
+    var disposeBag = DisposeBag()
+    var mockPhotosAPI: MockRxPhotosAPI!
+    var mockImageStorage: MockImageStorage!
+    var repository: ImageDataRepository!
 
     override func setUp() {
         super.setUp()
 
-        mockFlickrFetcher = MockPhotosAPI()
-        mockImageCacher = MockImageCacher()
-        fetcher = Fetcher(flickrFetcher: mockFlickrFetcher,
-                          imageCacher: mockImageCacher)
+        mockPhotosAPI = MockRxPhotosAPI()
+        mockImageStorage = MockImageStorage()
+        repository = ImageDataRepository(imageFetcher: mockPhotosAPI,
+                                         imageStorage: mockImageStorage)
     }
 
     override func tearDown() {
-        fetcher = nil
-        mockImageCacher = nil
-        mockFlickrFetcher = nil
+        repository = nil
+        mockImageStorage = nil
+        mockPhotosAPI = nil
 
         super.tearDown()
     }
@@ -32,11 +35,11 @@ final class FetcherFacadeTests: XCTestCase {
         let photo = Photo.mocked(id: "sampleID")
 
         // WHEN
-        fetcher.getImageData(for: photo) { _ in }
-        mockImageCacher.getImageDataFuncCheck.arguments?.1(nil)
+        mockImageStorage.getImageDataStub = .error(ImageStorageError.notFound)
+        _ = repository.getImageData(for: photo).toBlocking().materialize()
 
         // THEN
-        XCTAssertTrue(mockFlickrFetcher.getImageDataFuncCheck.wasCalled)
+        XCTAssertTrue(mockPhotosAPI.getImageDataFuncCheck.wasCalled)
     }
 
     func test_whenRequestingImageData_whenThereIsNoCachedData_whenReqeustIsMade_thenTheResultShouldBeCached() {
@@ -47,14 +50,14 @@ final class FetcherFacadeTests: XCTestCase {
         let sampleData = sampleCachedString.data(using: .utf8)!
 
         // WHEN
-        fetcher.getImageData(for: photo) { _ in }
-        mockImageCacher.getImageDataFuncCheck.arguments?.1(nil)
-        mockFlickrFetcher.getImageDataFuncCheck.arguments?.1(.success(sampleData))
+        mockImageStorage.getImageDataStub = .error(ImageStorageError.notFound)
+        mockPhotosAPI.getImageDataStub = .just(sampleData)
+        _ = repository.getImageData(for: photo).toBlocking().materialize()
 
         // THEN
-        XCTAssertEqual(mockImageCacher.setImageDataFuncCheck.arguments?.0, sampleData)
-        XCTAssertEqual(mockImageCacher.setImageDataFuncCheck.arguments?.1, samplePhotoID)
-        XCTAssertTrue(mockImageCacher.setImageDataFuncCheck.wasCalled)
+        XCTAssertEqual(mockImageStorage.setImageDataFuncCheck.arguments?.0, sampleData)
+        XCTAssertEqual(mockImageStorage.setImageDataFuncCheck.arguments?.1, samplePhotoID)
+        XCTAssertTrue(mockImageStorage.setImageDataFuncCheck.wasCalled)
     }
 
     func test_whenRequestingImageData_whenThereIsCachedData_thenTheCachedDataShouldBeReturned() {
@@ -62,16 +65,13 @@ final class FetcherFacadeTests: XCTestCase {
         let photo = Photo.mocked(id: "sampleID")
         let sampleCachedString = "sample"
         let cachedData = sampleCachedString.data(using: .utf8)!
-        var result: Result<Data, APIError>!
 
         // WHEN
-        fetcher.getImageData(for: photo) { result = $0 }
-        mockImageCacher.getImageDataFuncCheck.arguments?.1(cachedData)
+        mockImageStorage.getImageDataStub = .just(cachedData)
+        let result = try? repository.getImageData(for: photo).toBlocking().first()
 
         // THEN
-        let expectedResult = Result<Data, APIError>.success(cachedData)
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertFalse(mockFlickrFetcher.getImageDataFuncCheck.wasCalled)
+        XCTAssertEqual(result, cachedData)
+        XCTAssertFalse(mockPhotosAPI.getImageDataFuncCheck.wasCalled)
     }
-
 }

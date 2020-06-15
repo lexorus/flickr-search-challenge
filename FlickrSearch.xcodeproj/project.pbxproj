@@ -70,6 +70,7 @@
 		B1A5CE7D243B29E30004F3F7 /* MockSearchPhotosRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE77243B29E30004F3F7 /* MockSearchPhotosRequest.swift */; };
 		B1A5CE7E243B29E30004F3F7 /* MockHTTPURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE78243B29E30004F3F7 /* MockHTTPURLResponse.swift */; };
 		B1A5CE83243B2A620004F3F7 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A5CE81243B2A620004F3F7 /* DataExtensions.swift */; };
+		B1B24F542497D9F00026C1F3 /* MockRxPhotosAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B24F532497D9F00026C1F3 /* MockRxPhotosAPI.swift */; };
 		B1E26C5C243601DD00EA9664 /* SearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E26C5B243601DD00EA9664 /* SearchViewModelTests.swift */; };
 		B1FD2D572435E64E00871D76 /* UICollectionViewLayoutBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FD2D562435E64E00871D76 /* UICollectionViewLayoutBuilder.swift */; };
 		BF82625D2B51FCBCE47D9A38 /* Pods_FlickrSearchTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DE6337BAAFF2CCD03778C3E /* Pods_FlickrSearchTests.framework */; };
@@ -224,6 +225,7 @@
 		B1A5CE77243B29E30004F3F7 /* MockSearchPhotosRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSearchPhotosRequest.swift; sourceTree = "<group>"; };
 		B1A5CE78243B29E30004F3F7 /* MockHTTPURLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHTTPURLResponse.swift; sourceTree = "<group>"; };
 		B1A5CE81243B2A620004F3F7 /* DataExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
+		B1B24F532497D9F00026C1F3 /* MockRxPhotosAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRxPhotosAPI.swift; sourceTree = "<group>"; };
 		B1E26C5B243601DD00EA9664 /* SearchViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModelTests.swift; sourceTree = "<group>"; };
 		B1FD2D562435E64E00871D76 /* UICollectionViewLayoutBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewLayoutBuilder.swift; sourceTree = "<group>"; };
 		CCD03D7E2D9C9549AE99A3D7 /* Pods-PhotosAPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotosAPITests.release.xcconfig"; path = "Target Support Files/Pods-PhotosAPITests/Pods-PhotosAPITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				651C017723855B79003BE167 /* MockImageCacher.swift */,
+				B1B24F532497D9F00026C1F3 /* MockRxPhotosAPI.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1107,6 +1110,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65CC6FFF2384926700406610 /* MockFetcher.swift in Sources */,
+				B1B24F542497D9F00026C1F3 /* MockRxPhotosAPI.swift in Sources */,
 				651C017823855B79003BE167 /* MockImageCacher.swift in Sources */,
 				B13243882451B180006E4BBE /* PhotosAPIRxAdapterTests.swift in Sources */,
 				B1E26C5C243601DD00EA9664 /* SearchViewModelTests.swift in Sources */,
