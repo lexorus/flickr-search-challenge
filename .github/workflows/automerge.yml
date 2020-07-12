@@ -12,21 +12,21 @@ name: PR automerge
 # To bypass this the codecov status reporting is used. It will be reported at the end of `ci` workflow and trigger
 # automerge workflow.
 
-on:
-  pull_request:
-    types:
-      - labeled
-      - unlabeled
-  pull_request_review:
-    types:
-      - submitted
-  check_suite:
-    types:
-      - completed
-  check_run:
-    types:
-      - completed
-  status: {}
+on: [pull_request]
+  # pull_request:
+  #   types:
+  #     - labeled
+  #     - unlabeled
+  # pull_request_review:
+  #   types:
+  #     - submitted
+  # check_suite:
+  #   types:
+  #     - completed
+  # check_run:
+  #   types:
+  #     - completed
+  # status: {}
 
 jobs:
   automerge:
@@ -34,7 +34,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Wait for CI
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-build
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: CI
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
       - name: automerge
+        if: steps.wait-for-build.outputs.conclusion == 'success'
         uses: pascalgn/automerge-action@v0.8.4
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
