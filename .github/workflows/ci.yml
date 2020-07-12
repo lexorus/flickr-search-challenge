@@ -43,3 +43,10 @@ jobs:
         with:
           name: flickr-search
           fail_ci_if_error: true
+
+      - name: Update commit status
+        if: ${{ github.event_name == 'pull_request' && success() }}
+        uses: ouzi-dev/commit-status-updater@v1.0.4
+        with:
+          token: ${{ secrets.COMMIT_STATUS_TOKEN }}
+          status: "success"
