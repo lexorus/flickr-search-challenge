@@ -50,3 +50,4 @@ jobs:
         with:
           token: ${{ secrets.COMMIT_STATUS_TOKEN }}
           status: "success"
+          name: "CI - Ok to automerge"
