@@ -11,6 +11,8 @@ on:
       - labeled
       - unlabeled
       - synchronize
+      - edited
+      - unlocked
   pull_request_review:
     types:
       - submitted
