@@ -1,27 +1,27 @@
 name: PR automerge
 
+# Important notes:
+#
 # Automatic deletion of PR branches after merge is done through GitHub repository settings
 # https://docs.github.com/en/github/administering-a-repository/managing-the-automatic-deletion-of-branches
-
+#
 # "Require branches to be up to date before merging" is also enabled for the repository
+#
+# "check_suite" and "check_run" are not triggered for the GitHub Actions to prevent recusivity. More information
+# https://docs.github.com/en/actions/reference/events-that-trigger-workflows#check_suite
+# Also, it is impossible to trigger other workflows using the GitHub Actions default token for the same reasons.
+#
+# That's why, this workflow is triggered by the status that is posted on success from "CI" workflow.
+#
 
 on:
   pull_request:
     types:
       - labeled
       - unlabeled
-      - synchronize
-      - edited
-      - unlocked
   pull_request_review:
     types:
       - submitted
-  check_suite:
-    types:
-      - completed
-  check_run:
-    types:
-      - completed
   status: {}
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
           MERGE_METHOD: "squash"
           MERGE_COMMIT_MESSAGE: "automatic"
           MERGE_FORKS: "false"
-          MERGE_RETRIES: "2"
-          MERGE_RETRY_SLEEP: "60000"
+          MERGE_RETRIES: "0" # Preventing retry mechanism
+          MERGE_RETRY_SLEEP: "0"
           MERGE_DELETE_BRANCH: "true"
           UPDATE_METHOD: "rebase"
