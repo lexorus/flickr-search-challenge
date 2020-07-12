@@ -44,10 +44,13 @@ jobs:
           name: flickr-search
           fail_ci_if_error: true
 
+      # This is neccessary to trigger "automerge" workflow
       - name: Update commit status
         if: ${{ github.event_name == 'pull_request' && success() }}
         uses: ouzi-dev/commit-status-updater@v1.0.4
         with:
+          # You cannot trigger another workflow using default GitHub actions token to prevent recursive jobs, that's why custom token is used.
+          # More info: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token
           token: ${{ secrets.COMMIT_STATUS_TOKEN }}
           status: "success"
           name: "CI - Ok to automerge"

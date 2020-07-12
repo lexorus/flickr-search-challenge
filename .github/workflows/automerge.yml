@@ -9,8 +9,10 @@ name: PR automerge
 #
 # "check_suite" and "check_run" are not triggered for the GitHub Actions to prevent recusivity. More information
 # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#check_suite
-# To bypass this the codecov status reporting is used. It will be reported at the end of `ci` workflow and trigger
-# automerge workflow.
+# Also, it is impossible to trigger other workflows using the GitHub Actions default token for the same reasons.
+#
+# That's why, this workflow is triggered by the status that is posted on success from "CI" workflow.
+#
 
 on:
   pull_request:
