@@ -38,6 +38,7 @@
 		B13243862451A63E006E4BBE /* RxPhotosAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13243852451A63E006E4BBE /* RxPhotosAPI.swift */; };
 		B13243882451B180006E4BBE /* PhotosAPIRxAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13243872451B180006E4BBE /* PhotosAPIRxAdapterTests.swift */; };
 		B1429BD324334088001478D4 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1429BD224334088001478D4 /* SearchViewModel.swift */; };
+		B17361FA2512522700A09C78 /* Testing.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17361F92512522700A09C78 /* Testing.generated.swift */; };
 		B174F9452434B25C00A9A4A8 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B174F9442434B25C00A9A4A8 /* StringExtensions.swift */; };
 		B18E63DA2455CF57003B4115 /* FunctionalHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18E63D92455CF57003B4115 /* FunctionalHelpers.swift */; };
 		B18E63DC2455CFFF003B4115 /* SearchViewReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18E63DB2455CFFF003B4115 /* SearchViewReducer.swift */; };
@@ -192,6 +193,8 @@
 		B13243852451A63E006E4BBE /* RxPhotosAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxPhotosAPI.swift; sourceTree = "<group>"; };
 		B13243872451B180006E4BBE /* PhotosAPIRxAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosAPIRxAdapterTests.swift; sourceTree = "<group>"; };
 		B1429BD224334088001478D4 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		B17361F72512520D00A09C78 /* Testing.stencil */ = {isa = PBXFileReference; lastKnownFileType = text; path = Testing.stencil; sourceTree = "<group>"; };
+		B17361F92512522700A09C78 /* Testing.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Testing.generated.swift; sourceTree = "<group>"; };
 		B174F9442434B25C00A9A4A8 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		B18E63D92455CF57003B4115 /* FunctionalHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionalHelpers.swift; sourceTree = "<group>"; };
 		B18E63DB2455CFFF003B4115 /* SearchViewReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewReducer.swift; sourceTree = "<group>"; };
@@ -503,6 +506,7 @@
 		B11DDEE2243C729800C52E32 /* PhotosAPIMocks */ = {
 			isa = PBXGroup;
 			children = (
+				B17361F82512522700A09C78 /* Generated */,
 				B11DDF01243C731A00C52E32 /* Sources */,
 				B11DDF00243C72FC00C52E32 /* SupportingFiles */,
 			);
@@ -558,9 +562,26 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		B17361F6251251A700A09C78 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				B17361F72512520D00A09C78 /* Testing.stencil */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		B17361F82512522700A09C78 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				B17361F92512522700A09C78 /* Testing.generated.swift */,
+			);
+			path = Generated;
+			sourceTree = "<group>";
+		};
 		B1A5CE1B243B1BEB0004F3F7 /* PhotosAPI */ = {
 			isa = PBXGroup;
 			children = (
+				B17361F6251251A700A09C78 /* Templates */,
 				B1A5CE3C243B25B40004F3F7 /* Sources */,
 				B1A5CE38243B1C080004F3F7 /* SupportingFiles */,
 			);
@@ -802,6 +823,7 @@
 			buildConfigurationList = B1A5CE36243B1BEB0004F3F7 /* Build configuration list for PBXNativeTarget "PhotosAPI" */;
 			buildPhases = (
 				CA959B55EFAE9F6CAC357DA7 /* [CP] Check Pods Manifest.lock */,
+				B17361F52512517A00A09C78 /* Sourcery */,
 				B1A5CE15243B1BEA0004F3F7 /* Headers */,
 				B1A5CE16243B1BEA0004F3F7 /* Sources */,
 				B1A5CE17243B1BEA0004F3F7 /* Frameworks */,
@@ -1016,6 +1038,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FlickrSearch/Pods-FlickrSearch-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B17361F52512517A00A09C78 /* Sourcery */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Sourcery;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Sourcery/bin/sourcery\" --sources \"${SRCROOT}/PhotosAPI/Sources\" --templates \"${SRCROOT}/PhotosAPI/Templates\" --output \"${SRCROOT}/PhotosAPIMocks/Generated\" --disableCache --verbose\n";
+		};
 		CA959B55EFAE9F6CAC357DA7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1127,6 +1167,7 @@
 				B11DDF07243C735400C52E32 /* FuncCheck.swift in Sources */,
 				B11DDF09243C73AD00C52E32 /* MockPhoto.swift in Sources */,
 				B11DDF04243C733700C52E32 /* MockCancellable.swift in Sources */,
+				B17361FA2512522700A09C78 /* Testing.generated.swift in Sources */,
 				B11DDF0B243C73BB00C52E32 /* MockPhotosPage.swift in Sources */,
 				B11DDF13243C78AD00C52E32 /* DataExtensions.swift in Sources */,
 			);
