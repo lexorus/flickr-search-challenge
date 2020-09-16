@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Photo: Codable, Equatable {
+public struct Photo: Codable, Equatable, AutoStubable {
     public let id: String
     public let title: String
     public let secret: String

@@ -1,7 +1,7 @@
 import Foundation
 import MicroNetwork
 
-public protocol Cancellable: class {
+public protocol Cancellable: class, AutoMockable {
     func cancel()
 }
 

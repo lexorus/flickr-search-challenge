@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol PhotosAPI {
+public protocol PhotosAPI: AutoMockable {
     func getPhotos(query: String,
                    pageNumber: UInt,
                    pageSize: UInt,
