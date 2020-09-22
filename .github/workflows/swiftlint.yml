@@ -16,5 +16,7 @@ jobs:
 
       - name: Swiftlint
         uses: norio-nomura/action-swiftlint@3.1.0
+        with:
+           args: --force-exclude
         env:
           DIFF_BASE: ${{ github.base_ref }}
