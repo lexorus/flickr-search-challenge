@@ -1061,7 +1061,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Sourcery/bin/sourcery\" --sources \"${SRCROOT}/PhotosAPI/Sources\" --templates \"${SRCROOT}/PhotosAPI/Sourcery/Templates\" --output \"${SRCROOT}/PhotosAPIMocks/Sources/Sourcery/Generated\" --disableCache --verbose\n";
+			shellScript = "\"${PODS_ROOT}/Sourcery/bin/sourcery\" --config \"${SRCROOT}/.sourcery.yml\"\n";
 		};
 		CA959B55EFAE9F6CAC357DA7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
