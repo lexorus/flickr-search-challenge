@@ -29,15 +29,13 @@
 		65E07DBC238352C700384B72 /* SearchViewControllerEventState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E07DBB238352C700384B72 /* SearchViewControllerEventState.swift */; };
 		8F4A33747AB0D84594FD546D /* Pods_PhotosAPI_PhotosAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAF93AF86EA898AB28ACB7EA /* Pods_PhotosAPI_PhotosAPITests.framework */; };
 		B11DDEF3243C729800C52E32 /* PhotosAPIMocks.h in Headers */ = {isa = PBXBuildFile; fileRef = B11DDEE3243C729800C52E32 /* PhotosAPIMocks.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B11DDF04243C733700C52E32 /* MockCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF03243C733700C52E32 /* MockCancellable.swift */; };
 		B11DDF07243C735400C52E32 /* FuncCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF06243C735400C52E32 /* FuncCheck.swift */; };
-		B11DDF09243C73AD00C52E32 /* MockPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF08243C73AD00C52E32 /* MockPhoto.swift */; };
-		B11DDF0B243C73BB00C52E32 /* MockPhotosPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF0A243C73BB00C52E32 /* MockPhotosPage.swift */; };
-		B11DDF11243C766700C52E32 /* MockPhotosAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF10243C766700C52E32 /* MockPhotosAPI.swift */; };
 		B11DDF13243C78AD00C52E32 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11DDF12243C78AD00C52E32 /* DataExtensions.swift */; };
 		B13243862451A63E006E4BBE /* RxPhotosAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13243852451A63E006E4BBE /* RxPhotosAPI.swift */; };
 		B13243882451B180006E4BBE /* PhotosAPIRxAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13243872451B180006E4BBE /* PhotosAPIRxAdapterTests.swift */; };
 		B1429BD324334088001478D4 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1429BD224334088001478D4 /* SearchViewModel.swift */; };
+		B17361FA2512522700A09C78 /* Testing.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17361F92512522700A09C78 /* Testing.generated.swift */; };
+		B17361FF2512547500A09C78 /* SourceryHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17361FE2512547500A09C78 /* SourceryHelpers.swift */; };
 		B174F9452434B25C00A9A4A8 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B174F9442434B25C00A9A4A8 /* StringExtensions.swift */; };
 		B18E63DA2455CF57003B4115 /* FunctionalHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18E63D92455CF57003B4115 /* FunctionalHelpers.swift */; };
 		B18E63DC2455CFFF003B4115 /* SearchViewReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18E63DB2455CFFF003B4115 /* SearchViewReducer.swift */; };
@@ -183,15 +181,14 @@
 		B11DDEE1243C729800C52E32 /* PhotosAPIMocks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PhotosAPIMocks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B11DDEE3243C729800C52E32 /* PhotosAPIMocks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotosAPIMocks.h; sourceTree = "<group>"; };
 		B11DDEE4243C729800C52E32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B11DDF03243C733700C52E32 /* MockCancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCancellable.swift; sourceTree = "<group>"; };
 		B11DDF06243C735400C52E32 /* FuncCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuncCheck.swift; sourceTree = "<group>"; };
-		B11DDF08243C73AD00C52E32 /* MockPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPhoto.swift; sourceTree = "<group>"; };
-		B11DDF0A243C73BB00C52E32 /* MockPhotosPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPhotosPage.swift; sourceTree = "<group>"; };
-		B11DDF10243C766700C52E32 /* MockPhotosAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPhotosAPI.swift; sourceTree = "<group>"; };
 		B11DDF12243C78AD00C52E32 /* DataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
 		B13243852451A63E006E4BBE /* RxPhotosAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxPhotosAPI.swift; sourceTree = "<group>"; };
 		B13243872451B180006E4BBE /* PhotosAPIRxAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosAPIRxAdapterTests.swift; sourceTree = "<group>"; };
 		B1429BD224334088001478D4 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		B17361F72512520D00A09C78 /* Testing.stencil */ = {isa = PBXFileReference; lastKnownFileType = text; path = Testing.stencil; sourceTree = "<group>"; };
+		B17361F92512522700A09C78 /* Testing.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Testing.generated.swift; sourceTree = "<group>"; };
+		B17361FE2512547500A09C78 /* SourceryHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceryHelpers.swift; sourceTree = "<group>"; };
 		B174F9442434B25C00A9A4A8 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		B18E63D92455CF57003B4115 /* FunctionalHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionalHelpers.swift; sourceTree = "<group>"; };
 		B18E63DB2455CFFF003B4115 /* SearchViewReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewReducer.swift; sourceTree = "<group>"; };
@@ -521,21 +518,10 @@
 		B11DDF01243C731A00C52E32 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				B17362012512588700A09C78 /* Sourcery */,
 				B11DDF05243C734600C52E32 /* Utils */,
-				B11DDF02243C732000C52E32 /* Mocks */,
 			);
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		B11DDF02243C732000C52E32 /* Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				B11DDF10243C766700C52E32 /* MockPhotosAPI.swift */,
-				B11DDF03243C733700C52E32 /* MockCancellable.swift */,
-				B11DDF08243C73AD00C52E32 /* MockPhoto.swift */,
-				B11DDF0A243C73BB00C52E32 /* MockPhotosPage.swift */,
-			);
-			path = Mocks;
 			sourceTree = "<group>";
 		};
 		B11DDF05243C734600C52E32 /* Utils */ = {
@@ -558,9 +544,51 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		B17361F6251251A700A09C78 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				B17361F72512520D00A09C78 /* Testing.stencil */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		B17361F82512522700A09C78 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				B17361F92512522700A09C78 /* Testing.generated.swift */,
+			);
+			path = Generated;
+			sourceTree = "<group>";
+		};
+		B17361FC2512545A00A09C78 /* Sourcery */ = {
+			isa = PBXGroup;
+			children = (
+				B17361F6251251A700A09C78 /* Templates */,
+				B17361FD2512546300A09C78 /* Helpers */,
+			);
+			path = Sourcery;
+			sourceTree = "<group>";
+		};
+		B17361FD2512546300A09C78 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				B17361FE2512547500A09C78 /* SourceryHelpers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		B17362012512588700A09C78 /* Sourcery */ = {
+			isa = PBXGroup;
+			children = (
+				B17361F82512522700A09C78 /* Generated */,
+			);
+			path = Sourcery;
+			sourceTree = "<group>";
+		};
 		B1A5CE1B243B1BEB0004F3F7 /* PhotosAPI */ = {
 			isa = PBXGroup;
 			children = (
+				B17361FC2512545A00A09C78 /* Sourcery */,
 				B1A5CE3C243B25B40004F3F7 /* Sources */,
 				B1A5CE38243B1C080004F3F7 /* SupportingFiles */,
 			);
@@ -802,6 +830,7 @@
 			buildConfigurationList = B1A5CE36243B1BEB0004F3F7 /* Build configuration list for PBXNativeTarget "PhotosAPI" */;
 			buildPhases = (
 				CA959B55EFAE9F6CAC357DA7 /* [CP] Check Pods Manifest.lock */,
+				B17361F52512517A00A09C78 /* Sourcery */,
 				B1A5CE15243B1BEA0004F3F7 /* Headers */,
 				B1A5CE16243B1BEA0004F3F7 /* Sources */,
 				B1A5CE17243B1BEA0004F3F7 /* Frameworks */,
@@ -1016,6 +1045,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FlickrSearch/Pods-FlickrSearch-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B17361F52512517A00A09C78 /* Sourcery */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Sourcery;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Sourcery/bin/sourcery\" --config \"${SRCROOT}/.sourcery.yml\"\n";
+		};
 		CA959B55EFAE9F6CAC357DA7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1123,11 +1170,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B11DDF11243C766700C52E32 /* MockPhotosAPI.swift in Sources */,
 				B11DDF07243C735400C52E32 /* FuncCheck.swift in Sources */,
-				B11DDF09243C73AD00C52E32 /* MockPhoto.swift in Sources */,
-				B11DDF04243C733700C52E32 /* MockCancellable.swift in Sources */,
-				B11DDF0B243C73BB00C52E32 /* MockPhotosPage.swift in Sources */,
+				B17361FA2512522700A09C78 /* Testing.generated.swift in Sources */,
 				B11DDF13243C78AD00C52E32 /* DataExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1142,6 +1186,7 @@
 				B1A5CE44243B25E50004F3F7 /* Photo.swift in Sources */,
 				B1A5CE45243B25E50004F3F7 /* PhotosPage.swift in Sources */,
 				B1A5CE42243B25E50004F3F7 /* Photos.swift in Sources */,
+				B17361FF2512547500A09C78 /* SourceryHelpers.swift in Sources */,
 				B19BB4CF243CC91100ACC7D0 /* FlickrPhotosAPI.swift in Sources */,
 				B1A5CE55243B27EF0004F3F7 /* FlickrRequest.swift in Sources */,
 				B1A5CE3B243B25970004F3F7 /* PhotosAPI.swift in Sources */,

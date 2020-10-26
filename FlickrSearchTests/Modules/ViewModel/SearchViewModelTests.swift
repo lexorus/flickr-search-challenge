@@ -31,7 +31,15 @@ final class SearchViewModelTests: XCTestCase {
     }
 
     private func configureViewModelWithInitialLoad(
-        _ initialLoadResult: Result<PhotosPage, APIError> = .success(.mocked(photos: [.mocked()]))
+        _ initialLoadResult: Result<PhotosPage, APIError> = .success(.mocked(pageNumber: 1,
+                                                                             totalNumberOfPages: 2,
+                                                                             itemsPerPage: 2,
+                                                                             totalItems: "4",
+                                                                             photos: [.mocked(id: "id",
+                                                                                              title: "title",
+                                                                                              secret: "secret",
+                                                                                              server: "server",
+                                                                                              farm: 1)]))
     ) {
         let searchString = "query"
         viewModel.searchText.onNext(searchString)

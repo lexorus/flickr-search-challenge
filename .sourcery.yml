@@ -1,0 +1,9 @@
+sources:
+  - PhotosAPI/Sources
+templates:
+  - PhotosAPI/Sourcery/Templates
+output:
+  PhotosAPIMocks/Sources/Sourcery/Generated
+args:
+  disableCache: true
+  verbose: true

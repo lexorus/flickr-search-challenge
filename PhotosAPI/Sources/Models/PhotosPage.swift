@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PhotosPage: Decodable, Equatable {
+public struct PhotosPage: Decodable, Equatable, AutoStubable {
     public let pageNumber: UInt
     public let totalNumberOfPages: UInt
     public let itemsPerPage: UInt

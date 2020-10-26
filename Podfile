@@ -20,6 +20,7 @@ target 'FlickrSearch' do
 end
 
 target 'PhotosAPI' do
+	pod 'Sourcery'
 	pod 'MicroNetwork', :git => 'https://github.com/lexorus/MicroNetwork.git', :tag => '0.3.0'
 
 	target 'PhotosAPITests' do

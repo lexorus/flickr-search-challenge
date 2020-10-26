@@ -1,0 +1,75 @@
+import Foundation
+import PhotosAPI
+
+{# Adjust method name to be lower camel case #}
+{% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
+{% macro removingEscaping name%}{{ name | replace:"@escaping ","" }}{% endmacro %}
+{#  #}
+{#  #}
+{#  #}
+{# Create func check property #}
+{% macro funcCheckProperty method %}
+    {% if method.parameters.count == 0 %}
+    public let {% call swiftifyMethodName method.callName %}FuncCheck = ZeroArgumentsFuncCheck()
+    {% elif method.parameters.count == 1 %}
+    public let {% call swiftifyMethodName method.callName %}FuncCheck = FuncCheck<{% for param in method.parameters %}{% call removingEscaping param.typeName %}{% endfor %}>()
+    {% else %}
+    public let {% call swiftifyMethodName method.callName %}FuncCheck = FuncCheck<({% for param in method.parameters %}{% call removingEscaping param.typeName %}{{ ', ' if not forloop.last }}{% endfor %})>()
+    {% endif %}
+{% endmacro %}
+{#  #}
+{#  #}
+{#  #}
+{# Create stub property #}
+{%macro stubProperty method%}
+    {% if not method.returnTypeName.isVoid %}
+    public var {% call swiftifyMethodName method.callName %}Stub = Mock{{ method.returnTypeName }}()
+    {% endif %}
+{% endmacro %}
+{#  #}
+{#  #}
+{#  #}
+{# Create method #}
+{% macro mockMethod method%}
+    {% call funcCheckProperty method %}
+    {% call stubProperty method %}
+    public func {{ method.name }}{{ ' throws' if method.throws }}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
+        {% if method.parameters.count == 0 %}
+        {% call swiftifyMethodName method.callName %}FuncCheck.call()
+        {% elif method.parameters.count == 1 %}
+        {% call swiftifyMethodName method.callName %}FuncCheck.call({% for param in method.parameters %}{{ param.name }}{{ ', ' if not forloop.last }}{% endfor %})    
+        {% else %}
+        {% call swiftifyMethodName method.callName %}FuncCheck.call(({% for param in method.parameters %}{{ param.name }}{{ ', ' if not forloop.last }}{% endfor %}))
+        {% endif %}
+        {% if not method.returnTypeName.isVoid %}
+        return {% call swiftifyMethodName method.callName %}Stub
+        {% endif %}
+    }
+{% endmacro %}
+{#  #}
+{#  #}
+{#  #}
+{# Main #}
+{% for type in types.protocols where type.based.AutoMockable or type|annotated:"AutoMockable" %}{% if type.name != "AutoMockable" %}
+public final class Mock{{ type.name }}: {{ type.name }} {
+    public init() {}
+    
+{% for method in type.allMethods %}
+    {% call mockMethod method %}
+    {% if not forloop.last %}
+
+    {%endif%}
+{% endfor %}
+}
+
+{% endif %}{% endfor %}
+{% for type in types.all where type.based.AutoStubable or type|annotated:"AutoStubable" %}{% if type.name != "AutoStubable" %}
+extension {{ type.name }} {
+{% for method in type.allMethods where method.isInitializer%}
+    public static func mocked({% for param in method.parameters%}{{ param.name}}: {{ param.typeName }} = .init(){{ ', ' if not forloop.last }}{% endfor %}) -> {{ type.name }} {
+        return .init({% for param in method.parameters%}{{ param.name}}: {{ param.name}}{{ ', ' if not forloop.last }}{% endfor %})
+    }
+{% endfor %}
+}
+
+{% endif %}{% endfor %}
