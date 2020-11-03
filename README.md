@@ -21,7 +21,5 @@ To run the application on device you will need to specify the "Development Team"
 * Add a debouncer that will prevent the requests before used finishes typing.
 * Adjust ImageCaching with a possibility to save on disc.
 * Improve collection layout based on image sizes/orientations.
-* Move API logic in a separate target.
-* Configure CI with Swiftlint and Danger.
 * Add nice application icon and launch screen.
 * Cover the View part of SearchModule with tests.
